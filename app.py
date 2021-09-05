@@ -1,37 +1,27 @@
 from flask import Flask
-from flask import render_template, request
+from flask import redirect, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from os import getenv
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] =  getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    words=["word1","word2", "word3"]
-    return render_template("index.html", message="Welcome!",items=words)
+    result = db.session.execute("SELECT content FROM messages")
+    messages = result.fetchall()
+    return render_template("index.html", count=len(messages), messages=messages)
 
-@app.route("/page1")
-def page1():
-    return "Page1!"
+@app.route("/new")
+def new():
+    return render_template("new.html")
 
-
-@app.route("/page2")
-def page2():
-    return "Page2!"
-
-@app.route("/form")
-def form():
-    return render_template("form.html")
-
-@app.route("/result", methods=["POST"])
+@app.route("/send", methods=["POST"])
 def result():
-    return render_template("result.html", name=request.form["name"])
-
-@app.route("/test")
-def test():
-    content = " "
-    for i in range(100):
-        content += str(i+1) + " "
-    return content
-
-@app.route("/page/<int:id>")
-def page(id):
-    return "Page: " + str(id)
+    content = request.form["content"]
+    sql = "INSERT INTO messages (content) VALUES (:content)"
+    db.session.execute(sql, {"content": content})
+    db.session.commit()
+    return redirect("/")

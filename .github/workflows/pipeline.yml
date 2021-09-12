@@ -3,9 +3,9 @@ name: Pylint
 on: 
   push:
     branches:
-      - master
+      - main, deadline-02
   pull_request:
-     branches: [master]
+     branches: [main]
      types: [opened, synchronize]
 
 jobs:

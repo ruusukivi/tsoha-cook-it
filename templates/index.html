@@ -1,10 +1,6 @@
-<title>Front Page</title>
-<h1>Front Page</h1>
-<p>Message count {{ count }}</p>
-<hr>
-
-{% for message in messages %}
-{{ message.content }}
-{% endfor %}
-<hr>
-<a href="/new">Send a new message</a>
+{% extends "layout.html" %}
+{% block title %}Newest recipes{% endblock %}
+{% block content %}
+<h1>What's new</h1>
+Coming soon
+{% endblock %}

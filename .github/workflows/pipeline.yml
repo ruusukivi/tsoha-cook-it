@@ -25,8 +25,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
     - name: Analysing the code with pylint
-      #run: |
-      #  pylint `ls -R|grep .py$|xargs`
+      run: |
+        pylint `ls -R|grep .py$|xargs`
     - name: Deploying to Heroku
       uses: AkhileshNS/heroku-deploy@v3.12.12
       with:

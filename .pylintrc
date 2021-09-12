@@ -1,0 +1,8 @@
+ignored-classes=scoped_session
+
+[MESSAGES CONTROL]
+
+disable=missing-module-docstring,
+        missing-function-docstring,
+        import-error,
+        cyclic-import

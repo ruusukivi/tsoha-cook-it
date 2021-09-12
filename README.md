@@ -2,6 +2,8 @@
 
 Tietokantasovellus on tietojenkäsittelytieteen harjoitustyökurssi, jossa toteutetaan tietokantaa käyttävä web-sovellus.
 
+Sovellus Herokussa: https://tsoha-cook-it.herokuapp.com/
+
 ## COOK IT -reseptihaku
 
 Cook it on sovellus, johon voi tallettaa reseptejä ja kommentoida niitä.

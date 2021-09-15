@@ -15,11 +15,12 @@ def login():
         password = request.form['password']
         if users.login(username, password):
             return redirect('/')
-    return render_template('error.html')
+    return render_template('login.html', message='Please check username and password')
 
 @app.route('/logout')
 def logout():
     users.logout()
+    return redirect('/')
 
 @app.route('/signup',methods=['GET', 'POST'])
 def signup():
@@ -31,7 +32,7 @@ def signup():
         password2 = request.form['password2']
         profilename = request.form['profilename']
         if password != password2:
-            return render_template('error.html')
+            return render_template('signup.html', message='Oops! Passwords do not match')
         if users.signup(username, password, profilename):
-            return redirect('/')
-    return render_template('error.html')
+            return render_template('login.html', message='Sign up done! Please log in')
+    return render_template('error.html', message='Sign up failed')

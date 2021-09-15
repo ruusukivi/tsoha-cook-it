@@ -2,10 +2,14 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 <h2>Login</h2>
-{% if session.username %}
+{% if session.user_id %}
 <p>You are logged in as {{ session.username }}</p>
 <a href="/logout">Log out</a>
 {% else %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<div class="w-50">
 <form action="/login" method="POST">
     <div class="form-group">
         <label>Username:</label><br />
@@ -20,5 +24,6 @@
         <button type="submit" class="btn btn-warning">Log in</button>
     </div>
 </form>
+</div>
 {% endif %}
 {% endblock %}

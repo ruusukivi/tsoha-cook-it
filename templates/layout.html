@@ -32,9 +32,10 @@
             </ul>
 
             <div class="col-md-3 text-end">
-                {% if session.username %}
-                <div>Logged in as {{ session.username }}</div>
+                {% if session.user_id %}
+                <div class="small">Logged in {{ session.username }}
                 <button type="button" class="btn btn-warning"><a href="/logout">Log out</a></button>
+                </div>
                 {% else %}
                 <button type="button" class="btn btn-warning"><a href="/login">Log In</a></button>
                 <button type="button" class="btn btn-warning"><a href="/signup">Sign Up</a></button>

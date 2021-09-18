@@ -1,10 +1,11 @@
 from flask import render_template, redirect, request
 from app import app
-import users
+import users, recipes
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    newest = recipes.get_all()
+    return render_template('index.html', recipes=newest)
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -38,3 +39,14 @@ def signup():
         if users.signup(username, password, profilename):
             return render_template('login.html', message='Sign up done! Please log in')
     return render_template('error.html', message='Sign up failed.')
+
+@app.route('/newrecipe',methods=['GET', 'POST'])
+def addrecipe():
+    if request.method == 'GET':
+        return render_template('newrecipe.html')
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        if recipes.add_recipe(name, description):
+            return redirect('/')
+    return render_template('error.html', message='Adding a new recipe failed.')

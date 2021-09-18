@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}New recipe{% endblock %}
+{% block content %}
+<h2>Add a new recipe</h2>
+{% if not session.user_id %}
+<p>You are not logged in. Please <a href="/login"></a>log in</p>a> </p>
+{% else %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<div class="w-50">
+    <form action="/newrecipe" method="POST">
+        <div class="form-group">
+            <label>Name:</label><br />
+            <input type="text" class="form-control form-control-sm" name="name" placeholder="Name of the recipe">
+        </div>
+        <div class="form-group">
+            <label>Description:</label><br />
+            <textarea type="text" name="description" class="form-control form-control-sm" rows="3" placeholder="Describe what makes your recipe worth of cooking...."></textarea>
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-warning">Add recipe</button>
+        </div>
+</div>
+</form>
+{% endif %}
+{% endblock %}

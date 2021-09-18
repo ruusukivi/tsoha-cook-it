@@ -31,8 +31,10 @@ def signup():
         password = request.form['password']
         password2 = request.form['password2']
         profilename = request.form['profilename']
+        if len(password) < 9:
+            return render_template('signup.html', message='Ooops! Password is too short')
         if password != password2:
             return render_template('signup.html', message='Oops! Passwords do not match')
         if users.signup(username, password, profilename):
             return render_template('login.html', message='Sign up done! Please log in')
-    return render_template('error.html', message='Sign up failed')
+    return render_template('error.html', message='Sign up failed.')

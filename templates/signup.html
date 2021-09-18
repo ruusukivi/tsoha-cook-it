@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+<h2>Sign up</h2>
+{% if session.user_id %}
+<p>You are logged in as {{ session.username }}</p>
+<a href="/logout">Log out</a>
+{% else %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+<div class="w-50">
+    <form action="/signup" method="POST">
+        <div class="form-group">
+            <label>Username:</label><br />
+            <input type="text" class="form-control form-control-sm" name="username" placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password:</label><br />
+            <input type="password" class="form-control form-control-sm" name="password"
+                placeholder="At least 10 characters">
+        </div>
+        <div class="form-group">
+            <label>Password:</label><br />
+            <input type="password" class="form-control form-control-sm" name="password2" placeholder="Repeat password">
+        </div>
+        <div class="form-group">
+            <label>Profile name:</label><br />
+            <input type="text" class="form-control form-control-sm" name="profilename"
+                placeholder="Visible for other users">
+        </div>
+                <div class="form-group">
+            <br />
+            <button type="submit" class="btn btn-warning">Sign up</button>
+        </div>
+</div>
+</form>
+{% endif %}
+{% endblock %}

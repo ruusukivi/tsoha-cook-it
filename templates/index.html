@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Newest recipes{% endblock %}
 {% block content %}
-<h1>What's new</h1>
+<h2>What's new</h2>
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
 Coming soon
 {% endblock %}

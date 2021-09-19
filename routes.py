@@ -1,11 +1,13 @@
 from flask import render_template, redirect, request
 from app import app
-import users, recipes
+import users
+import recipes
 
 @app.route('/')
 def index():
     newest = recipes.get_all()
-    return render_template('index.html', recipes=newest)
+    types = recipes.get_types()
+    return render_template('index.html', recipes=newest, types = types)
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -43,10 +45,14 @@ def signup():
 @app.route('/newrecipe',methods=['GET', 'POST'])
 def addrecipe():
     if request.method == 'GET':
-        return render_template('newrecipe.html')
+        types = recipes.get_types()
+        return render_template('newrecipe.html', types = types)
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        if recipes.add_recipe(name, description):
+        type_id = request.form['type_id']
+        steps = request.form['steps']
+        incredients = request.form['incredients']
+        if recipes.add_recipe(name, description, type_id, steps, incredients):
             return redirect('/')
     return render_template('error.html', message='Adding a new recipe failed.')

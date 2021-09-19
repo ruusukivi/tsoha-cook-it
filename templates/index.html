@@ -21,7 +21,7 @@
         <a href="#" class="btn btn-dark">Show recipe</a>
     </div>
 </div>
-<br/>
+<br />
 {% for recipe in recipes %}
 <div class="card">
     <div class="card-body">
@@ -30,6 +30,9 @@
             | <a href="/">{{ recipe.profilename }}</a>
         </h6>
         <p class="card-text">{{ recipe.description }}</p>
+        <p class="card-text"><pre>{{ recipe.incredients }}</pre></p>
+            <p class="card-text"><pre>{{ recipe.steps }}</pre></p>
+            <p class="card-text"><pre>{{ recipe.type }}</pre></p>
         <a href="#" class="card-link">Show recipe</a>
     </div>
 </div>

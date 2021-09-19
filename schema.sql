@@ -8,8 +8,16 @@ CREATE TABLE users
 
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
-    name TEXT  NOT NULL,
+    name TEXT NOT NULL,
+    typeid INTEGER REFERENCES types,
     description TEXT,
-    creator_id INTEGER  NOT NULL REFERENCES users,
+    steps TEXT,
+    incredients TEXT,
+    creator_id INTEGER REFERENCES users,
     created_at TIMESTAMP
+);
+
+CREATE TABLE types (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
 );

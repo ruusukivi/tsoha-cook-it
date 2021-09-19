@@ -11,12 +11,33 @@
 <div class="w-50">
     <form action="/newrecipe" method="POST">
         <div class="form-group">
-            <label>Name:</label><br />
-            <input type="text" class="form-control form-control-sm" name="name" placeholder="Name of the recipe">
+            <label>Name</label><br />
+            <input type="text" class="form-control form-control-sm " name="name" placeholder="Name of the recipe">
         </div>
+        <br />
         <div class="form-group">
-            <label>Description:</label><br />
+            <label>Type</label><br />
+            <select class="form-select form-select-font-size-sm" type="text" name="type_id">
+                <option selected>Choose</option>
+                {% for type in types %}
+                <option value={{ type.id }}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Description</label><br />
             <textarea type="text" name="description" class="form-control form-control-sm" rows="3" placeholder="Describe what makes your recipe worth of cooking...."></textarea>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>List incredients</label><br />
+            <textarea type="text" name="incredients" class="form-control form-control-sm" rows="3" placeholder="List all ingredients and amounts"></textarea>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>How to cook it</label><br />
+            <textarea type="text" name="steps" class="form-control form-control-sm" rows="5" placeholder="Describe the steps of cooking"></textarea>
         </div>
         <br />
         <div class="form-group">

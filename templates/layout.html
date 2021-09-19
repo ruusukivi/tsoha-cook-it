@@ -33,8 +33,8 @@
 
             <div class="col-md-3 text-end">
                 {% if session.user_id %}
-                <div class="small">Logged in {{ session.username }}
-                <button type="button" class="btn btn-warning"><a href="/logout">Log out</a></button>
+                <div class="small">{{ session.username }} |
+                <a href="/logout">Log out</a>
                 </div>
                 {% else %}
                 <button type="button" class="btn btn-warning"><a href="/login">Log In</a></button>

@@ -35,7 +35,7 @@ def signup():
         password2 = request.form['password2']
         profilename = request.form['profilename']
         if len(password) < 9:
-            return render_template('signup.html', message='Ooops! Password is too short')
+            return render_template('signup.html', message='Oops! Password is too short')
         if password != password2:
             return render_template('signup.html', message='Oops! Passwords do not match')
         if users.signup(username, password, profilename):
@@ -50,9 +50,9 @@ def addrecipe():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        type_id = request.form['type_id']
+        typeid = request.form['typeid']
         steps = request.form['steps']
-        incredients = request.form['incredients']
-        if recipes.add_recipe(name, description, type_id, steps, incredients):
+        ingredients = request.form['ingredients']
+        if recipes.add_recipe(name, description, typeid, steps, ingredients):
             return redirect('/')
     return render_template('error.html', message='Adding a new recipe failed.')

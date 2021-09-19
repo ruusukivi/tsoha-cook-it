@@ -17,7 +17,7 @@
         <br />
         <div class="form-group">
             <label>Type</label><br />
-            <select class="form-select form-select-font-size-sm" type="text" name="type_id">
+            <select class="form-select form-select-font-size-sm" type="text" name="typeid">
                 <option selected>Choose</option>
                 {% for type in types %}
                 <option value={{ type.id }}>{{ type.name }}</option>
@@ -31,8 +31,8 @@
         </div>
         <br />
         <div class="form-group">
-            <label>List incredients</label><br />
-            <textarea type="text" name="incredients" class="form-control form-control-sm" rows="3" placeholder="List all ingredients and amounts"></textarea>
+            <label>List ingredients</label><br />
+            <textarea type="text" name="ingredients" class="form-control form-control-sm" rows="3" placeholder="List all ingredients and amounts"></textarea>
         </div>
         <br />
         <div class="form-group">

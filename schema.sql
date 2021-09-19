@@ -12,7 +12,7 @@ CREATE TABLE recipes (
     typeid INTEGER REFERENCES types,
     description TEXT,
     steps TEXT,
-    incredients TEXT,
+    ingredients TEXT,
     creator_id INTEGER REFERENCES users,
     created_at TIMESTAMP
 );

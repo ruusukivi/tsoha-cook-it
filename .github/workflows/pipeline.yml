@@ -4,16 +4,15 @@ on:
   push:
     branches:
       - main
-      - deadline-02
   pull_request:
-     branches: [main]
-     types: [opened, synchronize]
+     branches: 
+      - main
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -23,13 +22,17 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
-    #- name: Analysing the code with pylint
-    #  run: |
-    #    pylint `ls -R|grep .py$|xargs`
+        pip install flake8
+    - name: Lint with Flake
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Deploying to Heroku
-      uses: AkhileshNS/heroku-deploy@v3.12.12
+    - uses: AkhileshNS/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: "tsoha-cook-it" #Must be unique in Heroku
+        heroku_app_name: "tsoha-cook-it" 
         heroku_email: "ruusukivi@gmail.com"
+        healthcheck: "https://tsoha-cook-it.herokuapp.com/health"
+        rollbackonhealthcheckfailed: true
+    
+        

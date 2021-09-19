@@ -6,6 +6,11 @@ CREATE TABLE users
     profilename TEXT NOT NULL UNIQUE
 );
 
+CREATE TABLE types (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -17,7 +22,3 @@ CREATE TABLE recipes (
     created_at TIMESTAMP
 );
 
-CREATE TABLE types (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
-);

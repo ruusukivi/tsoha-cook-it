@@ -56,3 +56,10 @@ def addrecipe():
         if recipes.add_recipe(name, description, typeid, steps, ingredients):
             return redirect('/')
     return render_template('error.html', message='Adding a new recipe failed.')
+
+@app.route('/recipe/<int:recipe_id>',methods=['GET'])
+def get_recipe(recipe_id):
+    if request.method == 'GET':
+        recipe = recipes.get(recipe_id)
+        return render_template('recipe.html', recipe = recipe)
+    return render_template('error.html', message='Recipe was not found.')

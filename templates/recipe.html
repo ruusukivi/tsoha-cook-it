@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}{{ recipe.name }} | Cook It{% endblock %}
+{% block content %}
+
+{% if session.user_id %}
+<div class="small">
+    <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
+</div>
+<br />
+{% endif %}
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+
+<div class="card">  
+    <div class="card-body">
+        <h1>{{ recipe.name }}</h1>
+        <p><button type="button" class="btn-sm btn-secondary">{{ recipe.type }}</button></p>
+        <p class="card-subtitle mb-2 text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M:%S") }}
+            | <a href="/">{{ recipe.profilename }}</a>
+        </p>
+        <p class="card-text">{{ recipe.description }}</p>
+        <p class="card-text">
+            <pre>{{ recipe.ingredients }}</pre>
+        </p>
+        <p class="card-text">
+        </p>
+        <p class="card-text">
+            <pre></pre>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

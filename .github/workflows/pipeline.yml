@@ -34,10 +34,10 @@ jobs:
         heroku git:remote -a tsoha-cook-it
         heroku logout
     - name: Deploying Heroku
-        uses: AkhileshNS/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "tsoha-cook-it" 
-          heroku_email: "ruusukivi@gmail.com"
-          healthcheck: "https://tsoha-cook-it.herokuapp.com/"
-          rollbackonhealthcheckfailed: true
+      uses: AkhileshNS/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "tsoha-cook-it" 
+        heroku_email: "ruusukivi@gmail.com"
+        healthcheck: "https://tsoha-cook-it.herokuapp.com/"
+        rollbackonhealthcheckfailed: true

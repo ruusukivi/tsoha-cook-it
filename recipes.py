@@ -3,11 +3,18 @@ from flask import session
 from db import db
 
 def get_all():
-    sql = '''SELECT R.name, R.description, R.ingredients, R.steps, T.name as type, U.profilename,
-    R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id AND T.id=R.typeid  
-    ORDER BY R.created_at DESC'''
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type,
+    U.profilename, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
+    AND T.id=R.typeid ORDER BY R.created_at DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
+
+def get(id):
+    sql = '''SELECT R.name, R.description, R.ingredients, R.steps, T.name as type, U.profilename,
+    R.created_at FROM recipes R, users U, types T WHERE R.id=:id AND 
+    R.creator_id=U.id AND T.id=R.typeid'''
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchone()
 
 def get_types():
     sql = 'SELECT name, id FROM types ORDER BY id'

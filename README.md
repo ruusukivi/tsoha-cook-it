@@ -25,7 +25,7 @@ Cook it on sovellus, johon voi tallettaa reseptejä sekä hakea ja kommentoida n
 - :white_large_square: Palveluun voi luoda admin-tunnuksia
 - :white_large_square: Admin-käyttäjä voi valita Featured-reseptejä etusivulle
 - :white_large_square: Resepteistä voi tykätä
-- :white_large_square: Resepteistä voi selata suosituimmuus-järjestyksessä
+- :white_large_square: Reseptejä voi selata suosituimmuus-järjestyksessä
 - :white_large_square: Reseptejä voi kommentoida
 - :white_large_square: Käyttäjä voi poistaa lisäämänsä reseptit
 - :white_large_square: Käyttäjä voi poistaa lisäämänsä kommentit

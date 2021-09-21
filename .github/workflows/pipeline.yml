@@ -21,16 +21,23 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-    - name: Deploying to Heroku 
+    - name: Reseting Heroku git 
       uses: AkhileshNS/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         heroku_app_name: "tsoha-cook-it" 
         heroku_email: "ruusukivi@gmail.com"
-        #healthcheck: "https://tsoha-cook-it.herokuapp.com/health"
-        #rollbackonhealthcheckfailed: true
         justlogin: true
     - run: |
         heroku plugins:install heroku-repo
         heroku repo:reset -a tsoha-cook-it
         heroku git:remote -a tsoha-cook-it
+        heroku logout
+    - name: Deploying Heroku
+        uses: AkhileshNS/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "tsoha-cook-it" 
+          heroku_email: "ruusukivi@gmail.com"
+          healthcheck: "https://tsoha-cook-it.herokuapp.com/"
+          rollbackonhealthcheckfailed: true

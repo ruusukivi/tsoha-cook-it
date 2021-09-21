@@ -32,4 +32,5 @@ jobs:
         justlogin: true
     - run: |
         heroku plugins:install heroku-repo
-        heroku repo:reset -a appname
+        heroku repo:reset -a tsoha-cook-it
+        heroku git:remote -a tsoha-cook-it

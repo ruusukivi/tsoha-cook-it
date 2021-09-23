@@ -16,9 +16,10 @@ CREATE TABLE recipes (
     name TEXT NOT NULL,
     typeid INTEGER REFERENCES types,
     description TEXT,
-    steps TEXT,
-    ingredients TEXT,
+    steps TEXT NOT NULL,
+    ingredients TEXT NOT NULL,
     creator_id INTEGER REFERENCES users,
-    created_at TIMESTAMP
+    created_at TIMESTAMP,
+    visible INTEGER NOT NULL
 );
 

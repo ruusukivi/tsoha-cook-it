@@ -4,7 +4,10 @@
 
 {% if session.user_id %}
 <div class="small">
-    <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
+    <form action="/recipe/delete" method="POST">
+        <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
+        {% if session.user_id == recipe.creator_id %}<button name="recipe_id" value="{{ recipe.id }}" class="btn btn-link">Delete recipe</button>{% endif %}
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </div>
 <br />
 {% endif %}

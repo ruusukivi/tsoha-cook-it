@@ -41,6 +41,7 @@
         </div>
         <br />
         <div class="form-group">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <button type="submit" class="btn btn-warning">Add recipe</button>
         </div>
 </div>

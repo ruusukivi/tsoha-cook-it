@@ -48,6 +48,7 @@ def addrecipe():
         types = recipes.get_types()
         return render_template('newrecipe.html', types = types)
     if request.method == 'POST':
+        users.check_csrf()
         name = request.form['name']
         description = request.form['description']
         typeid = request.form['typeid']
@@ -63,3 +64,12 @@ def get_recipe(recipe_id):
         recipe = recipes.get(recipe_id)
         return render_template('recipe.html', recipe = recipe)
     return render_template('error.html', message='Recipe was not found.')
+
+@app.route('/recipe/delete',methods=['POST'])
+def delete_recipe():
+    if request.method == 'POST':
+        users.check_csrf()
+        recipe_id = request.form['recipe_id']
+        if recipes.delete_recipe(recipe_id):
+            return redirect("/")
+    return render_template('error.html', message='You can delete only you own recipes.')

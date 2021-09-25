@@ -40,22 +40,35 @@ def add_recipe(name, description, typeid, steps, ingredients):
 
 def get_likes(recipe):
     sql = 'SELECT COUNT(recipe) FROM likes WHERE recipe=:recipe'
-    result = db.session.execute(sql, {"recipe":recipe})
+    result = db.session.execute(sql, {'recipe':recipe})
+    return result.fetchone()
+
+def has_user_liked(recipe, userid):
+    sql = 'SELECT id FROM likes WHERE recipe=:recipe AND userid=:userid'
+    result = db.session.execute(sql, {'recipe':recipe,'userid':userid })
     return result.fetchone()
 
 def like_recipe(recipe):
     userid = session['user_id']
-    try:
-        sql = 'INSERT INTO likes (recipe, userid) VALUES (:recipe, :userid)'
-        db.session.execute(sql,{'recipe':recipe, 'userid':userid})
-        db.session.commit()
-    except:
-        return False
+    if has_user_liked(recipe, userid):
+        try:
+            sql = 'DELETE FROM likes WHERE recipe=:recipe AND userid=:userid'
+            db.session.execute(sql,{'recipe':recipe, 'userid':userid})
+            db.session.commit()
+        except:
+            return False
+    else:
+        try:
+            sql = 'INSERT INTO likes (recipe, userid) VALUES (:recipe, :userid)'
+            db.session.execute(sql,{'recipe':recipe, 'userid':userid})
+            db.session.commit()
+        except:
+            return False
     return True
 
 def delete_recipe(recipe_id):
-    creator_id = session['user_id']
     try:
+        creator_id = session['user_id']
         sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id AND creator_id=:creator_id'
         db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id})
         db.session.commit()

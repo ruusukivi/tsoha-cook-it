@@ -81,6 +81,7 @@ def delete_recipe():
     if request.method == 'POST':
         users.check_csrf()
         recipe_id = request.form['recipe_id']
+        print(recipe_id)
         if recipes.delete_recipe(recipe_id):
             return redirect("/")
     return render_template('error.html', message='You can delete only you own recipes.')

@@ -41,8 +41,8 @@
         </p>
 
         {% if session.user_id == recipe.creator_id %}
-        <form action="/recipe/delete" method="POST"></form>
-        <button name="delete" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+        <form action="/recipe/delete" method="POST">
+        <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
         <br />

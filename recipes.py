@@ -38,6 +38,21 @@ def add_recipe(name, description, typeid, steps, ingredients):
         return False
     return True
 
+def get_likes(recipe):
+    sql = 'SELECT COUNT(recipe) FROM likes WHERE recipe=:recipe'
+    result = db.session.execute(sql, {"recipe":recipe})
+    return result.fetchone()
+
+def like_recipe(recipe):
+    userid = session['user_id']
+    try:
+        sql = 'INSERT INTO likes (recipe, userid) VALUES (:recipe, :userid)'
+        db.session.execute(sql,{'recipe':recipe, 'userid':userid})
+        db.session.commit()
+    except:
+        return False
+    return True
+
 def delete_recipe(recipe_id):
     creator_id = session['user_id']
     try:

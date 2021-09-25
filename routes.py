@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, url_for
 from app import app
 import users
 import recipes
@@ -62,8 +62,18 @@ def addrecipe():
 def get_recipe(recipe_id):
     if request.method == 'GET':
         recipe = recipes.get(recipe_id)
-        return render_template('recipe.html', recipe = recipe)
+        likes = recipes.get_likes(recipe_id)
+        return render_template('recipe.html', recipe = recipe, likes = likes)
     return render_template('error.html', message='Recipe was not found.')
+
+@app.route('/recipe/like',methods=['POST'])
+def like_recipe():
+    if request.method == 'POST':
+        users.check_csrf()
+        recipe_id = request.form['recipe_id']
+        if recipes.like_recipe(recipe_id):
+            return redirect(url_for('get_recipe', recipe_id = recipe_id))
+    return render_template('error.html', message='Something went sideways.')
 
 @app.route('/recipe/delete',methods=['POST'])
 def delete_recipe():

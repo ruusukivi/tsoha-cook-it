@@ -16,7 +16,7 @@
 <div class="card">
     <div class="card-header ">Featured</div>
     <div class="card-body bg-light">
-        <h5 class="card-title h5 h4-sm">Special recipe</h5>
+        <h3 class="card-title">Special recipe</h3>
         <p class="card-text"> Description</p>
         <a href="#" class="btn btn-dark">Show recipe</a>
     </div>
@@ -25,12 +25,13 @@
 {% for recipe in recipes %}
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{ recipe.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M:%S") }}
+        <h3 class="card-title">{{ recipe.name }}</h3>
+        <div class="card-subtitle mb-2">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} 
             | <a href="/">{{ recipe.profilename }}</a>
-        </h6>
+            | 7 <i class="fa fa-heart"> </i>
+        </div>
         <p class="card-text">{{ recipe.description }}</p>
-        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a>
+        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a> 
     </div>
 </div>
 {% endfor %}

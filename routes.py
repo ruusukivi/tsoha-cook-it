@@ -56,7 +56,8 @@ def addrecipe():
         ingredients = request.form['ingredients']
         if recipes.add_recipe(name, description, typeid, steps, ingredients):
             return redirect('/')
-    return render_template('error.html', message='Adding a new recipe failed.')
+    return render_template('error.html',
+    message='Adding the recipe failed. Please fill all fields.')
 
 @app.route('/recipe/<int:recipe_id>',methods=['GET'])
 def get_recipe(recipe_id):

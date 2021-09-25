@@ -1,35 +1,33 @@
 {% extends "layout.html" %}
-{% block title %}Newest recipes{% endblock %}
+{% block title %}Best recipes{% endblock %}
 {% block content %}
-<h2>What's new</h2>
-{% if session.user_id %}
-<div class="small">
-    <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
-</div>
-<br />
-{% endif %}
-{% if message %}
-<div class="alert alert-warning">{{ message }}</div>
-{% endif %}
-
-
-<div class="card">
-    <div class="card-header ">Featured</div>
+<a href="recipe/23" class="text-decoration-none text-dark">
+    <div class="card mb-3">
+    <img src="../static/dessert.png" class="card-img-top" alt="Dream dessert">
     <div class="card-body bg-light">
-        <h3 class="card-title">Special recipe</h3>
-        <p class="card-text"> Description</p>
-        <a href="#" class="btn btn-dark">Show recipe</a>
+      <h2 class="card-title">Dream dessert with strawberrys and cream</h2>
+      <p class="card-text">This is a the most delicous dessert there is... Easy to cook when friends pop up unexpectedly. Add all 
+          your favorite berrys on the top. Decorate with whipped cream and coconut flakes.</p>
     </div>
-</div>
-<br />
+  </div>
+</a>
+
+  <ul class="nav nav-tabs ">
+    <li class="nav-item bg-light">
+      <a class="nav-link active" aria-current="page" href="#new">What's new</a>
+    </li>
+    <li class="nav-item bg-light">
+      <a class="nav-link" href="#">What's trending</a>
+    </li>
+  </ul>
+  <a id="new"></a>
 {% for recipe in recipes %}
 <div class="card">
     <div class="card-body">
         <h3 class="card-title">{{ recipe.name }}</h3>
-        <div class="card-subtitle mb-2">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} 
+        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} 
             | <a href="/">{{ recipe.profilename }}</a>
-            | 7 <i class="fa fa-heart"> </i>
-        </div>
+        </small></div>
         <p class="card-text">{{ recipe.description }}</p>
         <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a> 
     </div>

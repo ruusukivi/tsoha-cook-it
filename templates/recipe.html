@@ -2,12 +2,7 @@
 {% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
 
-{% if session.user_id %}
-<div class="small">
-    <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
-</div>
-<br />
-{% endif %}
+
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
@@ -19,9 +14,10 @@
         <p class="card-text">
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
-                <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-primary">
-                    <i class="fa fa-heart"></i> Likes {{ likes.count }}</button>
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+                <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
+                    Like <i class="fa fa-heart"></i> {{ likes.count }} </button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
             {% else %}
             <i class="fa fa-heart"></i> Likes {{ likes.count }}
@@ -45,12 +41,11 @@
         </p>
 
         {% if session.user_id == recipe.creator_id %}
-        <div class="small">
-            <form action="/recipe/delete" method="POST">
-                <button name="delete" value="{{ recipe.id }}" class="btn btn-outline-secondary">Delete
-                    recipe</button>
-                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        </div>
+        <form action="/recipe/delete" method="POST"></form>
+        <button name="delete" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        </form>
+        <br />
         {% endif %}
 
     </div>

@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Add a new recipe</h2>
 {% if not session.user_id %}
-<p>You are not logged in. Please <a href="/login">log in</a> </p>
+<p>You are not logged in. Please <a href="/login">log in</a>. </p>
 {% else %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>

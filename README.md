@@ -5,7 +5,7 @@ Projekti on tehty tietojenkäsittelytieteen harjoitustyökurssia varten, jossa a
 Sovellus Herokussa: https://tsoha-cook-it.herokuapp.com/
 
 Peruskäyttäjä:
-kt: testi
+kt: testi@mailinator.com
 ss: 1234567890
 
 Jos haluat testata lokaalisti, varmista ensin, että ympäristössä Python3, Flask ja Postgres asennettuina.

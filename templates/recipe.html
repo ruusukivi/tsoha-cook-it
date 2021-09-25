@@ -1,36 +1,53 @@
 {% extends "layout.html" %}
-{% block title %}{{ recipe.name }} | Cook It{% endblock %}
+{% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
 
-{% if session.user_id %}
-<div class="small">
-    <form action="/recipe/delete" method="POST">
-        <button type="button" class="btn btn-warning"><a href="/newrecipe">Add new recipe</a></button>
-        {% if session.user_id == recipe.creator_id %}<button name="recipe_id" value="{{ recipe.id }}" class="btn btn-link">Delete recipe</button>{% endif %}
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</div>
-<br />
-{% endif %}
+
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
 
-<div class="card">  
+<div class="card">
     <div class="card-body">
         <h1>{{ recipe.name }}</h1>
-        <p><button type="button" class="btn-sm btn-secondary">{{ recipe.type }}</button></p>
-        <p class="card-subtitle mb-2 text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M:%S") }}
-            | <a href="/">{{ recipe.profilename }}</a>
+
+        <p class="card-text">
+            {% if session.user_id %}
+            <form action="/recipe/like" method="POST">
+
+                <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
+                    Like <i class="fa fa-heart"></i> {{ likes.count }} </button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
+            {% else %}
+            <i class="fa fa-heart"></i> Likes {{ likes.count }}
+            {% endif %}
         </p>
-        <p class="card-text">{{ recipe.description }}</p>
+
+        <p class="small">
+            <a href="/">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
+                href="/">{{ recipe.profilename }}</a>
+        </p>
+
+        <p class="card-text"> {{ recipe.description }}</p>
+
+        <h3>Ingredients</h3>
         <p class="card-text">
             <pre>{{ recipe.ingredients }}</pre>
         </p>
+        <h3>How to cook it</h3>
         <p class="card-text">
+            <pre>{{ recipe.steps }}</pre>
         </p>
-        <p class="card-text">
-            <pre></pre>
-        </p>
+
+        {% if session.user_id == recipe.creator_id %}
+        <form action="/recipe/delete" method="POST"></form>
+        <button name="delete" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        </form>
+        <br />
+        {% endif %}
+
     </div>
 </div>
 

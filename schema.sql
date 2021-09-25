@@ -1,5 +1,4 @@
-CREATE TABLE users
-(
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
@@ -21,5 +20,11 @@ CREATE TABLE recipes (
     creator_id INTEGER REFERENCES users,
     created_at TIMESTAMP,
     visible INTEGER NOT NULL
+);
+
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    userid INTEGER REFERENCES users,
+    recipe INTEGER REFERENCES recipes
 );
 

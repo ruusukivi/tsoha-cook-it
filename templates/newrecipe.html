@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Add a new recipe</h2>
 {% if not session.user_id %}
-<p>You are not logged in. Please <a href="/login"></a>log in</p>a> </p>
+<p>You are not logged in. Please <a href="/login">log in</a> </p>
 {% else %}
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
@@ -12,12 +12,12 @@
     <form action="/newrecipe" method="POST">
         <div class="form-group">
             <label>Name</label><br />
-            <input type="text" class="form-control form-control-sm " name="name" placeholder="Name of the recipe">
+            <input type="text" class="form-control form-control" name="name" placeholder="Name of the recipe" required>
         </div>
         <br />
         <div class="form-group">
             <label>Type</label><br />
-            <select class="form-select form-select-font-size-sm" type="text" name="typeid">
+            <select class="form-select form-select-font-size" type="text" name="typeid" required>
                 <option selected>Choose</option>
                 {% for type in types %}
                 <option value={{ type.id }}>{{ type.name }}</option>
@@ -27,22 +27,22 @@
         <br />
         <div class="form-group">
             <label>Description</label><br />
-            <textarea type="text" name="description" class="form-control form-control-sm" rows="3" placeholder="Describe what makes your recipe worth of cooking...."></textarea>
+            <textarea type="text" name="description" class="form-control form-control" rows="3" placeholder="Describe what makes your recipe worth of cooking...." required></textarea>
         </div>
         <br />
         <div class="form-group">
             <label>List ingredients</label><br />
-            <textarea type="text" name="ingredients" class="form-control form-control-sm" rows="3" placeholder="List all ingredients and amounts"></textarea>
+            <textarea type="text" name="ingredients" class="form-control form-control" rows="3" placeholder="List all ingredients and amounts" required></textarea>
         </div>
         <br />
         <div class="form-group">
             <label>How to cook it</label><br />
-            <textarea type="text" name="steps" class="form-control form-control-sm" rows="5" placeholder="Describe the steps of cooking"></textarea>
+            <textarea type="text" name="steps" class="form-control form-control" rows="5" placeholder="Describe the steps of cooking" required></textarea>
         </div>
         <br />
         <div class="form-group">
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <button type="submit" class="btn btn-warning">Add recipe</button>
+            <button type="submit" class="btn btn-dark">Add recipe</button>
         </div>
 </div>
 </form>

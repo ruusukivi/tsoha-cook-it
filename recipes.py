@@ -66,6 +66,18 @@ def like_recipe(recipe):
             return False
     return True
 
+def get_recipes(profilename):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type, U.id,
+        U.profilename, U.username, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
+        AND T.id=R.typeid AND R.visible=1 AND U.profilename=:profilename
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql,{'profilename':profilename})
+        return result.fetchall()
+    except:
+        return False
+    return True
+
 def delete_recipe(recipe_id):
     try:
         creator_id = session['user_id']

@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 
 def login(username, password):
-    sql = 'SELECT id, password FROM users WHERE username=:username'
+    sql = 'SELECT id, password, profilename FROM users WHERE username=:username'
     result = db.session.execute(sql, {'username':username})
     user = result.fetchone()
     if not user:
@@ -12,6 +12,7 @@ def login(username, password):
     if check_password_hash(user.password, password):
         session['user_id'] = user.id
         session['username'] = username
+        session['profilename'] = user.profilename
         session["csrf_token"] = os.urandom(16).hex()
         return True
     return False

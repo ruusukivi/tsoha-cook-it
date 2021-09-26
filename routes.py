@@ -42,6 +42,13 @@ def signup():
             return render_template('login.html', message='Sign up done! Please log in')
     return render_template('error.html', message='Sign up failed.')
 
+@app.route('/profile/<string:profilename>',methods=['GET'])
+def get_profile(profilename):
+    if request.method == 'GET':
+        profile_recipes = recipes.get_recipes(profilename)
+        return render_template('profile.html', profile_recipes = profile_recipes, profilename = profilename)
+    return render_template('error.html', message='User was not found.')
+
 @app.route('/newrecipe',methods=['GET', 'POST'])
 def addrecipe():
     if request.method == 'GET':

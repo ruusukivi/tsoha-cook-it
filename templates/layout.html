@@ -39,7 +39,7 @@
 
             <div class="col-md-3 text-end">
                 {% if session.user_id %}
-                <a href="/profile"><button type="button" class="btn btn-outline-secondary">My profile</button></a>
+                <a href="/profile/{{session.profilename}}"><button type="button" class="btn btn-outline-secondary">My profile</button></a>
                 <a href="/logout"><button type="button" class="btn btn-outline-secondary">Log out</button></a>
                 </div>
                 {% else %}

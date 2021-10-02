@@ -7,8 +7,9 @@ import validation
 @app.route('/')
 def index():
     latest = recipes.get_all()
+    most_liked = recipes.get_popular()
     types = recipes.get_types()
-    return render_template('index.html', recipes=latest, types=types)
+    return render_template('index.html', latest=latest, popular=most_liked, types=types)
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -49,8 +50,9 @@ def signup():
 def get_profile(profilename):
     if request.method == 'GET':
         profile_recipes = recipes.get_recipes(profilename)
-        return render_template('profile.html', profile_recipes=profile_recipes,
-        profilename=profilename)
+        profile_likes = recipes.get_profile_likes(profilename)
+        return render_template('profile.html', latest=profile_recipes,
+        popular=profile_likes, profilename=profilename)
     return render_template('error.html', message='User was not found.')
 
 @app.route('/newrecipe',methods=['GET', 'POST'])
@@ -99,5 +101,5 @@ def delete_recipe():
         if recipes.delete_recipe(recipe_id):
             flash('Done! You have now deleted the recipe.')
             return redirect("/")
-    flash('You can delete only you own recipes.', error)
-    return redirect(url_for('get_recipe', recipe=recipe))
+    flash('You can delete only you own recipes.', 'error')
+    return redirect(url_for('get_recipe', recipe=recipe_id))

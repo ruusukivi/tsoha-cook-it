@@ -16,19 +16,6 @@
 </head>
 
 <body>
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-        crossorigin="anonymous"></script>
-    <!--Javascript for closing alerts and messages-->
-    <script>
-        setTimeout(function () {
-            var loader = document.getElementById("flashwrapper")
-            loader.style.transition = '.5s'
-            loader.style.opacity = '0'
-            loader.style.visibility = 'hidden'
-        }, 3250)
-    </script>
     <!-- Nav starts -->
     <div class="container">
         <header
@@ -69,7 +56,10 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div id="flashwrapper" class="alert alert-{{ 'warning' if category == 'error' else 'success' }}">{{ message }}
+        <div id="flashwrapper"
+            class="alert alert-{{ 'warning' if category == 'error' else 'success' }} alert-dismissible fade show"
+            role="alert">{{ message }}
+            <a href="#" class="btn-close" data-dismiss="alert" aria-label="close"></a>
         </div>
         {% endfor %}
         {% endif %}
@@ -84,6 +74,17 @@
             <p class="text-center text-muted">© 2021 Cook It</p>
         </footer>
     </div>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -8,12 +8,31 @@ def get_all():
     result = db.session.execute(sql)
     return result.fetchall()
 
+def get_popular():
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, U.profilename,
+    R.created_at, count(L.recipe) as popularity FROM recipes R, users U,likes L 
+    WHERE R.creator_id=U.id AND R.visible=1 AND L.recipe = R.id GROUP BY R.id, 
+    U.profilename ORDER BY popularity DESC'''
+    result = db.session.execute(sql)
+    return result.fetchall()
+
 def get(recipe_id):
     sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, R.creator_id,
     T.name as type, U.profilename, R.created_at FROM recipes R, users U, types T
     WHERE R.id=:recipe_id AND R.creator_id=U.id AND T.id=R.typeid AND R.visible=1'''
     result = db.session.execute(sql, {"recipe_id":recipe_id})
     return result.fetchone()
+
+def get_recipes(profilename):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type, U.id,
+        U.profilename, U.username, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
+        AND T.id=R.typeid AND R.visible=1 AND U.profilename=:profilename
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql,{'profilename':profilename})
+        return result.fetchall()
+    except:
+        return False
 
 def get_types():
     sql = 'SELECT name, id FROM types ORDER BY id'
@@ -40,6 +59,17 @@ def get_likes(recipe):
     result = db.session.execute(sql, {'recipe':recipe})
     return result.fetchone()
 
+def get_profile_likes(profilename):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, U.profilename, R.created_at, count(L.recipe)
+        AS popularity FROM recipes R,users U,likes L WHERE R.creator_id=U.id AND R.visible=1
+        AND L.recipe = R.id AND U.profilename=:profilename GROUP BY R.id, U.profilename
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql,{'profilename':profilename})
+        return result.fetchall()
+    except:
+        return False
+
 def has_user_liked(recipe, userid):
     sql = 'SELECT id FROM likes WHERE recipe=:recipe AND userid=:userid'
     result = db.session.execute(sql, {'recipe':recipe,'userid':userid })
@@ -62,17 +92,6 @@ def like_recipe(recipe):
         except:
             return False
     return True
-
-def get_recipes(profilename):
-    try:
-        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type, U.id,
-        U.profilename, U.username, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
-        AND T.id=R.typeid AND R.visible=1 AND U.profilename=:profilename
-        ORDER BY R.created_at DESC'''
-        result = db.session.execute(sql,{'profilename':profilename})
-        return result.fetchall()
-    except:
-        return False
 
 def delete_recipe(recipe_id):
     try:

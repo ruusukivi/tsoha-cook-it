@@ -2,17 +2,22 @@ from flask import session
 from db import db
 
 def get_all():
-    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type,
-    U.profilename, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
-    AND T.id=R.typeid AND R.visible=1 ORDER BY R.created_at DESC'''
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps,
+    T.name AS type,U.profilename, R.created_at, count(L.recipe) AS popularity
+    FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
+    LEFT JOIN types T ON T.id=R.typeid
+    LEFT JOIN likes L ON L.recipe = R.id
+    WHERE R.visible=1 GROUP BY R.id, U.id, T.id ORDER BY R.created_at DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_popular():
-    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, U.profilename,
-    R.created_at, count(L.recipe) as popularity FROM recipes R, users U,likes L 
-    WHERE R.creator_id=U.id AND R.visible=1 AND L.recipe = R.id GROUP BY R.id, 
-    U.profilename ORDER BY popularity DESC'''
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
+    U.profilename, R.created_at, count(L.recipe) AS popularity 
+    FROM recipes R, users U, types T, likes L
+    WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND L.recipe = R.id
+    GROUP BY R.id, U.profilename, T.name
+    ORDER BY popularity DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -25,10 +30,13 @@ def get(recipe_id):
 
 def get_recipes(profilename):
     try:
-        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name as type, U.id,
-        U.profilename, U.username, R.created_at FROM recipes R, users U, types T WHERE R.creator_id=U.id
-        AND T.id=R.typeid AND R.visible=1 AND U.profilename=:profilename
-        ORDER BY R.created_at DESC'''
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
+        R.created_at, count(L.recipe) AS popularity
+        FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
+        LEFT JOIN types T ON T.id=R.typeid
+        LEFT JOIN likes L ON L.recipe = R.id
+        WHERE R.visible=1 AND U.profilename=:profilename
+        GROUP BY R.id, U.id, T.id ORDER BY R.created_at DESC'''
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchall()
     except:
@@ -61,10 +69,13 @@ def get_likes(recipe):
 
 def get_profile_likes(profilename):
     try:
-        sql = '''SELECT R.id, R.name, R.description, U.profilename, R.created_at, count(L.recipe)
-        AS popularity FROM recipes R,users U,likes L WHERE R.creator_id=U.id AND R.visible=1
-        AND L.recipe = R.id AND U.profilename=:profilename GROUP BY R.id, U.profilename
-        ORDER BY R.created_at DESC'''
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type,
+        U.profilename, R.created_at, count(L.recipe) AS popularity 
+        FROM recipes R, users U, types T, likes L
+        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 
+        AND L.userid=U.id AND L.recipe=R.id
+        GROUP BY R.id, U.profilename, T.name
+        ORDER BY popularity DESC'''
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchall()
     except:

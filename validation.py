@@ -9,10 +9,10 @@ def validate_signup(password, password2, username, profilename):
         flash('Oops! Username is too long', 'error')
         return False
     if users.is_profilename_taken(profilename):
-        flash('Oops! Profilename is already taken. Please choose another.', 'error')
+        flash('Oops! Profilename is already taken.', 'error')
         return False
     if (len(password) < 9) or (len(password) > 50):
-        flash('Oops! Password should have over 8 and under 50 characters', 'error')
+        flash('Oops! Password should have > 8 and < 50 characters', 'error')
         return False
     if password != password2:
         flash('Oops! Passwords do not match', 'error')

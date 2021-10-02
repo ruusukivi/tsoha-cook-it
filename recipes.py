@@ -8,6 +8,14 @@ def get_all():
     result = db.session.execute(sql)
     return result.fetchall()
 
+def get_popular():
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, U.profilename,
+    R.created_at, count(L.recipe) as popularity FROM recipes R, users U,likes L 
+    WHERE R.creator_id=U.id AND R.visible=1 AND L.recipe = R.id GROUP BY R.id, 
+    U.profilename ORDER BY popularity DESC'''
+    result = db.session.execute(sql)
+    return result.fetchall()
+
 def get(recipe_id):
     sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, R.creator_id,
     T.name as type, U.profilename, R.created_at FROM recipes R, users U, types T

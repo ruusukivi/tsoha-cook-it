@@ -7,8 +7,9 @@ import validation
 @app.route('/')
 def index():
     latest = recipes.get_all()
+    most_liked = recipes.get_popular()
     types = recipes.get_types()
-    return render_template('index.html', recipes=latest, types=types)
+    return render_template('index.html', latest=latest, popular=most_liked, types=types)
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():

@@ -26,13 +26,13 @@ def validate_recipe(name, description, typeid, steps, ingredients):
     if typeid=="Choose":
         flash('Oops! Please choose type of the recipe', 'error')
         return False
-    if len(description) < 250:
+    if len(description) > 250:
         flash('Oops! Description is too long.', 'error')
         return False
-    if len(steps) < 1500:
+    if len(steps) > 1500:
         flash('Oops! Too much text in Steps.', 'error')
         return False
-    if len(ingredients) < 1500:
+    if len(ingredients) > 1500:
         flash('Oops! Too much text in Ingredients.', 'error')
         return False
     return True

@@ -2,36 +2,59 @@
 {% block title %}Best recipes{% endblock %}
 {% block content %}
 <a href="recipe/1" class="text-decoration-none text-dark">
-    <div class="card mb-3">
+  <div class="card mb-3">
     <img src="../static/dessert.png" class="card-img-top" alt="Dream dessert">
     <div class="card-body bg-light">
       <h2 class="card-title">Dream dessert with strawberries and cream</h2>
-      <p class="card-text">This is the most delicous dessert there is! Easy to cook when friends pop up unexpectedly. Add all 
-          your favorite berries on the top. Decorate with whipped cream and coconut flakes.</p>
+      <p class="card-text">This is the most delicous dessert there is! Easy to cook when friends pop up unexpectedly.
+        Add all
+        your favorite berries on the top. Decorate with whipped cream and coconut flakes.</p>
     </div>
   </div>
 </a>
 
-  <ul class="nav nav-tabs ">
-    <li class="nav-item bg-light">
-      <a class="nav-link active" aria-current="page" href="#new">What's new</a>
-    </li>
-    <!--<li class="nav-item bg-light">
-      <a class="nav-link" href="#">What's trending</a>
-    </li>-->
-  </ul>
-  <a id="new"></a>
-{% for recipe in recipes %}
-<div class="card">
-    <div class="card-body">
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="latest-tab" data-toggle="tab" href="#latest" role="tab" aria-controls="latest"
+      aria-selected="true">What's new</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular"
+      aria-selected="false">What's trending</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
+    {% for recipe in latest %}
+    <div class="card">
+      <div class="card-body">
         <h3 class="card-title">{{ recipe.name }}</h3>
-        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} 
+        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
             | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a>
-        </small></div>
+          </small></div>
         <p class="card-text">{{ recipe.description }}</p>
-        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a> 
+        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a>
+      </div>
     </div>
+    {% endfor %}
+  </div>
+  <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+    {% for recipe in popular %}
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">{{ recipe.name }}</h3>
+        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
+            | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> | <i class="fa fa-heart"></i>
+            Likes
+            {{ recipe.popularity }}
+          </small></div>
+        <p class="card-text">{{ recipe.description }}</p>
+        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
-{% endfor %}
 
 {% endblock %}

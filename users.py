@@ -1,5 +1,5 @@
 import os
-from flask import session, request
+from flask import session, request, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 
@@ -18,7 +18,7 @@ def login(username, password):
     return False
 
 def logout():
-    del session['user_id'], session['username']
+    del session['user_id'], session['username'], session['profilename'], session['csrf_token']
 
 def signup(username, password, profilename):
     hash_value = generate_password_hash(password)
@@ -31,6 +31,16 @@ def signup(username, password, profilename):
     except:
         return False
     return True
+
+def is_username_taken(username):
+    sql = 'SELECT username FROM users WHERE username=:username'
+    result = db.session.execute(sql, {'username':username})
+    return result.fetchone()
+
+def is_profilename_taken(profilename):
+    sql = 'SELECT profilename FROM users WHERE profilename=:profilename'
+    result = db.session.execute(sql, {'profilename':profilename})
+    return result.fetchone()
 
 def user_id():
     return session.get('user_id',0)

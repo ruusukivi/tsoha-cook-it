@@ -18,7 +18,7 @@ CREATE TABLE recipes (
     steps TEXT NOT NULL,
     ingredients TEXT NOT NULL,
     creator_id INTEGER REFERENCES users,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     visible INTEGER NOT NULL
 );
 

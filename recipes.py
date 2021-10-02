@@ -1,4 +1,3 @@
-import datetime
 from flask import session
 from db import db
 
@@ -23,16 +22,14 @@ def get_types():
 
 def add_recipe(name, description, typeid, steps, ingredients):
     creator_id = session['user_id']
-    created_at = datetime.datetime.now()
     visible = 1
     try:
         sql = '''INSERT INTO recipes (name,description,typeid,steps,ingredients,
         creator_id,created_at,visible) VALUES (:name,:description,:typeid,
-        :steps,:ingredients,:creator_id,:created_at,:visible)'''
+        :steps,:ingredients,:creator_id,now(),:visible)'''
         db.session.execute(sql,
         {'name':name,'description':description,'typeid':typeid,
-        'steps':steps,'ingredients':ingredients,'creator_id':creator_id,
-        'created_at':created_at,'visible':visible})
+        'steps':steps,'ingredients':ingredients,'creator_id':creator_id,'visible':visible})
         db.session.commit()
     except:
         return False
@@ -76,7 +73,6 @@ def get_recipes(profilename):
         return result.fetchall()
     except:
         return False
-    return True
 
 def delete_recipe(recipe_id):
     try:

@@ -6,14 +6,13 @@
 <p>You are logged in as {{ session.username }}</p>
 <a href="/logout">Log out</a>
 {% else %}
-{% if message %}
-<div class="alert alert-warning">{{ message }}</div>
-{% endif %}
+
+
 <div class="w-50">
-    <form action="/signup" method="POST">
+    <form name="signup" action="/signup" onsubmit="return validateForm()" method="POST">
         <div class="form-group">
             <label>Username:</label><br />
-            <input type="text" class="form-control form-control" name="username" placeholder="name@example.com" required>
+            <input type="text" name="username" class="form-control form-control" name="username" placeholder="name@example.com" required>
         </div>
         <div class="form-group">
             <label>Password:</label><br />
@@ -34,4 +33,5 @@
 </div>
 </form>
 {% endif %}
+
 {% endblock %}

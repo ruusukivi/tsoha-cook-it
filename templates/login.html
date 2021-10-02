@@ -6,9 +6,6 @@
 <p>You are logged in as {{ session.username }}</p>
 <a href="/logout">Log out</a>
 {% else %}
-{% if message %}
-<div class="alert alert-warning">{{ message }}</div>
-{% endif %}
 <div class="w-50">
 <form action="/login" method="POST">
     <div class="form-group">

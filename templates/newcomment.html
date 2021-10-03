@@ -1,27 +1,30 @@
 {% if not session.user_id %}
 <p>You are not logged in. Please <a href="/login">log in to comment</a>. </p>
 {% else %}
-<div class="w-50">
-    <hr class="border border-primary" />
-    <form action="/newcomment" method="POST" onsubmit="return check(this)">
-        <div class="form-group">
-            <h4>Add new comment</h4>
-            <pre>{{ form }}</pre>
-            {% if form %}
-            <input type="text" class="form-control" name="title" value="{{ form.title }}" required>
-            {% else %}
-            <input type="text" class="form-control" name="title" placeholder="Title of the recipe" required>
-            {% endif %}
-            <br />
-            <textarea type="text" name="comment" class="form-control" rows="3" placeholder="Write a comment...."
-                required>{% if form %}{{ form.comment }}{% endif %}</textarea>
+
+
+    <div class="card">
+        <h5 class="card-header">Add new comment</h5>
+        <div class="card-body bg-light">
+            <form action="/newcomment" method="POST" onsubmit="return check(this)">
+                <div class="form-group">
+                    {% if form %}
+                    <input type="text" class="form-control" name="title" value="{{ form.title }}" required>
+                    {% else %}
+                    <input type="text" class="form-control" name="title" placeholder="Title of the recipe" required>
+                    {% endif %}
+                    <br />
+                    <textarea type="text" name="comment" class="form-control" rows="3" placeholder="Write a comment...."
+                        required>{% if form %}{{ form.comment }}{% endif %}</textarea>
+                </div>
+                <br />
+                <div class="form-group">
+                    <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <button type="submit" class="btn btn-dark">Add comment</button>
+                </div>
         </div>
-        <br />
-        <div class="form-group">
-            <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <button type="submit" class="btn btn-primary">Add comment</button>
-        </div>
-</div>
-</form>
+        </form>
+    </div>
+
 {% endif %}

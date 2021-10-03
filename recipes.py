@@ -75,6 +75,14 @@ def add_comment(title, comment, recipe_id):
         return False
     return True
 
+def get_comments(recipe_id):
+    sql = '''SELECT C.id, C.title, C.comment, U.profilename, C.created_at, count(C.id) AS count
+    FROM comments C, users U
+    WHERE C.recipe_id=:recipe_id AND C.author_id=U.id AND C.visible=1
+    GROUP BY C.id, U.id ORDER BY C.created_at DESC'''
+    result = db.session.execute(sql, {"recipe_id":recipe_id})
+    return result.fetchall()
+
 def get_likes(recipe):
     sql = 'SELECT COUNT(recipe) FROM likes WHERE recipe=:recipe'
     result = db.session.execute(sql, {'recipe':recipe})

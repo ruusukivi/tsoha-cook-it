@@ -15,23 +15,17 @@
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
                 <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
-                    Like <i class="fa fa-heart"></i> {{ likes.count }} </button>
-                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            </form> &nbsp;
-            {% if session.user_id == recipe.creator_id %}
-            <form action="/recipe/delete" method="POST">
-                <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+                    Like recipe </button>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
             {% endif %}
-            {% else %}
-            <i class="fa fa-heart"></i> Likes {{ likes.count }}
-            {% endif %}
         </p>
 
-        <p class="small">
+        <p >
             <a href="/">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
-                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a>
+                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
+                | <i class="fa fa-heart"></i> Likes {{ likes.count }}
+                | <i class="fa fa-comment"></i> Comments {{ count }}
         </p>
 
         <p class="card-text"> {{ recipe.description }}</p>
@@ -44,13 +38,24 @@
         <p class="card-text">
             <pre>{{ recipe.steps }}</pre>
         </p>
-
-        {% include 'newcomment.html' %}
-
+        {% if session.user_id == recipe.creator_id %}
+        <form action="/recipe/delete" method="POST">
+            <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        </form>
+        {% endif %}
     </div>
+
+    {% include 'newcomment.html' %}
+    {% for comment in comments %}
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5 class="card-title">{{ comment.title}}</h5>
+            <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
+                    | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a></small></div>
+            <p class="card-text">{{ comment.comment}}</p>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-
-
-
-
 {% endblock %}

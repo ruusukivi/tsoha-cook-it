@@ -97,7 +97,8 @@ def get_recipe(recipe_id):
     if request.method == 'GET':
         recipe = recipes.get(recipe_id)
         likes = recipes.get_likes(recipe_id)
-        return render_template('recipe.html', recipe=recipe, likes=likes)
+        comments = recipes.get_comments(recipe_id)
+        return render_template('recipe.html', recipe=recipe, likes=likes, comments=comments)
     return render_template('error.html', message='Recipe was not found.')
 
 @app.route('/recipe/like',methods=['POST'])

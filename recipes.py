@@ -69,13 +69,11 @@ def get_likes(recipe):
 
 def get_profile_likes(profilename):
     try:
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type,
-        U.profilename, R.created_at, count(L.recipe) AS popularity 
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type,U.profilename,
+        R.created_at, count(L.recipe) AS popularity 
         FROM recipes R, users U, types T, likes L
-        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 
-        AND L.userid=U.id AND L.recipe=R.id
-        GROUP BY R.id, U.profilename, T.name
-        ORDER BY popularity DESC'''
+        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND L.userid=U.id AND L.recipe=R.id 
+        GROUP BY R.id, U.profilename, T.name ORDER BY popularity DESC;'''
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchall()
     except:

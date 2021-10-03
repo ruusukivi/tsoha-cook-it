@@ -3,11 +3,13 @@ from db import db
 
 def get_all():
     sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps,
-    T.name AS type,U.profilename, R.created_at, count(L.recipe) AS popularity
+    T.name AS type,U.profilename, R.created_at,
+    count(L.recipe) AS popularity, count(C.recipe_id) AS comments
     FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
     LEFT JOIN types T ON T.id=R.typeid
     LEFT JOIN likes L ON L.recipe = R.id
-    WHERE R.visible=1 GROUP BY R.id, U.id, T.id ORDER BY R.created_at DESC'''
+    LEFT JOIN comments C ON C.recipe_id = R.id
+    WHERE R.visible=1 GROUP BY R.id, U.id, T.id, C.id ORDER BY R.created_at DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -76,7 +78,7 @@ def add_comment(title, comment, recipe_id):
     return True
 
 def get_comments(recipe_id):
-    sql = '''SELECT C.id, C.title, C.comment, U.profilename, C.created_at, count(C.id) AS count
+    sql = '''SELECT C.id, C.title, C.comment, U.profilename, C.created_at
     FROM comments C, users U
     WHERE C.recipe_id=:recipe_id AND C.author_id=U.id AND C.visible=1
     GROUP BY C.id, U.id ORDER BY C.created_at DESC'''
@@ -86,6 +88,11 @@ def get_comments(recipe_id):
 def get_likes(recipe):
     sql = 'SELECT COUNT(recipe) FROM likes WHERE recipe=:recipe'
     result = db.session.execute(sql, {'recipe':recipe})
+    return result.fetchone()
+
+def get_comments_count(recipe_id):
+    sql = 'SELECT COUNT(recipe_id) FROM comments WHERE recipe_id=:recipe_id'
+    result = db.session.execute(sql, {'recipe_id':recipe_id})
     return result.fetchone()
 
 def get_profile_likes(profilename):

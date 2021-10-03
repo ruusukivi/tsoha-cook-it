@@ -28,3 +28,13 @@ CREATE TABLE likes (
     recipe INTEGER REFERENCES recipes
 );
 
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    author_id INTEGER REFERENCES users,
+    recipe_id INTEGER REFERENCES recipes,
+    created_at TIMESTAMP DEFAULT NOW(),
+    visible INTEGER NOT NULL
+);
+

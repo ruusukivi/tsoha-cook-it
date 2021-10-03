@@ -11,6 +11,7 @@ def index():
     types = recipes.get_types()
     return render_template('index.html', latest=latest, popular=most_liked, types=types)
 
+
 @app.route('/login',methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -75,6 +76,21 @@ def addrecipe():
     flash('Adding the recipe failed. Please try again later.')
     return render_template("/newrecipe.html", form=form, types=types)
 
+@app.route('/newcomment',methods=['POST'])
+def addcomment():
+    form = request.form
+    title = form['title']
+    comment = form['comment']
+    recipe = form['recipe_id']
+    if request.method == 'POST':
+        users.check_csrf()
+        print('Kommentin postaus')
+        if not validation.validate_comment(title, comment, recipe):
+            return redirect(url_for('get_recipe', recipe_id=recipe))
+        if recipes.add_comment(title, comment, recipe):
+            return redirect(url_for('get_recipe', recipe_id=recipe))
+    flash('Adding comment failed. Please try again later.', 'error')
+    return redirect(url_for('get_recipe', recipe_id=recipe))
 
 @app.route('/recipe/<int:recipe_id>',methods=['GET'])
 def get_recipe(recipe_id):

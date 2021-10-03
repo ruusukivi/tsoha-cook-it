@@ -1,5 +1,6 @@
 from flask import flash
 import users
+import recipes
 
 def validate_signup(password, password2, username, profilename):
     if '@' not in username or users.is_username_taken(username):
@@ -35,4 +36,17 @@ def validate_recipe(name, description, typeid, steps, ingredients):
     if len(ingredients) > 1500:
         flash('Oops! Too much text in Ingredients.', 'error')
         return False
+    return True
+
+def validate_comment(title, comment, recipe_id):
+    if len(title) > 150:
+        flash('Oops! Title is too long', 'error')
+        return False
+    if len(comment) > 500:
+        flash('Oops! Commment is too long', 'error')
+        return False
+    if not recipes.get(recipe_id):
+        flash('Oops! The recipe does not exist anymore!', 'error')
+        return False
+    print('Validointi onnistui')
     return True

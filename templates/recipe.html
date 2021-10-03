@@ -14,11 +14,16 @@
         <p class="card-text">
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
-
                 <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
                     Like <i class="fa fa-heart"></i> {{ likes.count }} </button>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form> &nbsp;
+            {% if session.user_id == recipe.creator_id %}
+            <form action="/recipe/delete" method="POST">
+                <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
+            {% endif %}
             {% else %}
             <i class="fa fa-heart"></i> Likes {{ likes.count }}
             {% endif %}
@@ -40,15 +45,12 @@
             <pre>{{ recipe.steps }}</pre>
         </p>
 
-        {% if session.user_id == recipe.creator_id %}
-        <form action="/recipe/delete" method="POST">
-        <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        </form>
-        <br />
-        {% endif %}
+        {% include 'newcomment.html' %}
 
     </div>
 </div>
+
+
+
 
 {% endblock %}

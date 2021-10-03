@@ -62,6 +62,19 @@ def add_recipe(name, description, typeid, steps, ingredients):
         return False
     return True
 
+def add_comment(title, comment, recipe_id):
+    author_id = session['user_id']
+    visible = 1
+    try:
+        sql = '''INSERT INTO comments(title,comment,author_id,recipe_id,created_at,visible) VALUES
+        (:title,:comment,:author_id,:recipe_id,now(),:visible)'''
+        db.session.execute(sql,{'title':title,'comment':comment,'author_id':author_id,
+        'recipe_id':recipe_id,'visible':visible})
+        db.session.commit()
+    except:
+        return False
+    return True
+
 def get_likes(recipe):
     sql = 'SELECT COUNT(recipe) FROM likes WHERE recipe=:recipe'
     result = db.session.execute(sql, {'recipe':recipe})

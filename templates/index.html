@@ -27,32 +27,12 @@
 <div class="tab-content" id="nav-tabContent">
   <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
     {% for recipe in latest %}
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">{{ recipe.name }}</h3>
-        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
-            | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a>
-          </small></div>
-        <p class="card-text">{{ recipe.description }}</p>
-        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a>
-      </div>
-    </div>
+      {% include 'card.html' %}
     {% endfor %}
   </div>
   <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
     {% for recipe in popular %}
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">{{ recipe.name }}</h3>
-        <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
-            | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> | <i class="fa fa-heart"></i>
-            Likes
-            {{ recipe.popularity }}
-          </small></div>
-        <p class="card-text">{{ recipe.description }}</p>
-        <a href="recipe/{{ recipe.id }}" class="card-link">Show recipe</a>
-      </div>
-    </div>
+     {% include 'card.html' %}
     {% endfor %}
   </div>
 </div>

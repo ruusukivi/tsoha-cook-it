@@ -26,3 +26,6 @@ INSERT INTO recipes (name,description,typeid,steps,ingredients,creator_id,create
 INSERT INTO recipes (name,description,typeid,steps,ingredients,creator_id,created_at,visible) VALUES ('Recipe name 18','Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum','3','Lorem ipsum lorem ipsum','Lorem ipsum lorem ipsum','1','2021-09-24 20:44','1');
 INSERT INTO recipes (name,description,typeid,steps,ingredients,creator_id,created_at,visible) VALUES ('Recipe name 19','Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum','5','Lorem ipsum lorem ipsum','Lorem ipsum lorem ipsum','1','2021-09-24 20:42','1');
 INSERT INTO recipes (name,description,typeid,steps,ingredients,creator_id,created_at,visible) VALUES ('Recipe name 20','Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum','1','Lorem ipsum lorem ipsum','Lorem ipsum lorem ipsum','1','2021-09-24 20:41','1');
+
+UPDATE users SET admin=True WHERE profilename='testi';
+UPDATE users SET admin=True WHERE profilename='pia';

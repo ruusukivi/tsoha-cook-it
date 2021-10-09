@@ -5,11 +5,11 @@ from db import db
 
 def get_all():
     sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps,
-    T.name AS type,U.profilename, R.created_at,
-    R.like_count, R.comment_count
-    FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
-    LEFT JOIN types T ON T.id=R.typeid
-    WHERE R.visible=1 GROUP BY R.id, U.id, T.id ORDER BY R.created_at DESC'''
+    T.name AS type,U.profilename, R.created_at, R.like_count, R.comment_count
+    FROM recipes R, users U, types T
+    WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 
+    GROUP BY R.id, U.id, T.id 
+    ORDER BY R.created_at DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -18,7 +18,7 @@ def get_popular():
     U.profilename, R.created_at,  R.like_count, R.comment_count
     FROM recipes R, users U, types T
     WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.like_count>0
-    GROUP BY R.id, U.profilename, T.name
+    GROUP BY R.id, U.id, T.id
     ORDER BY R.like_count DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
@@ -82,7 +82,8 @@ def get_recipes(profilename):
         FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
         LEFT JOIN types T ON T.id=R.typeid
         WHERE R.visible=1 AND U.profilename=:profilename
-        GROUP BY R.id, U.id, T.id ORDER BY R.created_at DESC'''
+        GROUP BY R.id, U.id, T.id 
+        ORDER BY R.created_at DESC'''
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchall()
     except:
@@ -115,7 +116,6 @@ def get_profile_likes(profilename):
 
 def get_profile_commented(profilename):
     commenter = get_profile_id(profilename)[0]
-    print(commenter)
     try:
         sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
         R.created_at, R.like_count, R.comment_count 
@@ -133,12 +133,12 @@ def get_profile_commented(profilename):
 # Getting, counting, adding and deleting comments
 
 def get_comments_count(recipe_id):
-    sql = 'SELECT COUNT(recipe_id) FROM comments WHERE recipe_id=:recipe_id'
+    sql = 'SELECT COUNT(recipe_id) FROM comments WHERE recipe_id=:recipe_id AND visible=1'
     result = db.session.execute(sql, {'recipe_id':recipe_id})
     return result.fetchone()
 
 def get_comments(recipe_id):
-    sql = '''SELECT C.id, C.title, C.comment, U.profilename, C.created_at
+    sql = '''SELECT C.id, C.title, C.comment, U.profilename, C.created_at, C.author_id, C.recipe_id
     FROM comments C, users U
     WHERE C.recipe_id=:recipe_id AND C.author_id=U.id AND C.visible=1
     GROUP BY C.id, U.id ORDER BY C.created_at DESC'''
@@ -164,7 +164,22 @@ def add_comment(title, comment, recipe_id):
     update_recipe_comment_count(recipe_id)
     return True
 
+def delete_comment(comment_id, recipe_id):
+    print('kommentin ja reseptin id')
+    print(comment_id, recipe_id)
+    try:
+        author_id = session['user_id']
+        sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id AND author_id=:author_id'
+        db.session.execute(sql,{'comment_id':comment_id, 'author_id':author_id})
+        db.session.commit()
+    except:
+        return False
+    update_recipe_comment_count(recipe_id)
+    return True
+
 def update_recipe_comment_count(recipe_id):
+    print('reseptin id')
+    print(recipe_id)
     try:
         comment_count = get_comments_count(recipe_id)[0]
         print(comment_count)
@@ -175,7 +190,7 @@ def update_recipe_comment_count(recipe_id):
         return False
     return True
 
-# Getting, counting, adding and deleting likes
+# Getting, counting, adding and updating likes
 
 def get_like_count(recipe_id):
     sql = 'SELECT COUNT(recipe_id) FROM likes WHERE recipe_id=:recipe_id'

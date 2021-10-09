@@ -9,7 +9,6 @@ def index():
     latest = recipes.get_all()
     popular = recipes.get_popular()
     commented = recipes.get_commented()
-    print(commented)
     types = recipes.get_types()
     return render_template('index.html', latest=latest, popular=popular, commented=commented,
     types=types)
@@ -102,7 +101,7 @@ def get_recipe(recipe_id):
         recipe = recipes.get(recipe_id)
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
-        return render_template('recipe.html', recipe=recipe, 
+        return render_template('recipe.html', recipe=recipe,
         all_comments=all_comments, comments=comments)
     return render_template('error.html', message='Recipe was not found.')
 
@@ -122,6 +121,18 @@ def delete_recipe():
         users.check_csrf()
         if recipes.delete_recipe(recipe_id):
             flash('Done! You have now deleted the recipe.')
-            return redirect("/")
+            return redirect('/')
     flash('You can delete only you own recipes.', 'error')
     return redirect(url_for('get_recipe', recipe=recipe_id))
+
+@app.route('/recipe/comment/delete',methods=['POST'])
+def delete_comment():
+    comment_id = request.form['id']
+    recipe_id = request.form['recipe_id']
+    if request.method == 'POST':
+        users.check_csrf()
+        if recipes.delete_comment(comment_id, recipe_id):
+            flash('Done! You have now deleted the comment.')
+            return redirect(url_for('get_recipe', recipe_id=recipe_id))
+    flash('You can delete only your own comments.', 'error')
+    return redirect(url_for('get_recipe', recipe_id=recipe_id))

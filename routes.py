@@ -123,7 +123,7 @@ def like_recipe():
         users.check_csrf()
         recipe_id = request.form['recipe_id']
         if recipes.like_recipe(recipe_id):
-            flash('Done! Your like is now updated ', 'error')
+            flash('Done! Your like is now updated ', 'success')
             return redirect(url_for('get_recipe', recipe_id=recipe_id))
     return render_template('error.html', message='Something went sideways.')
 

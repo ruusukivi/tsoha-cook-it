@@ -9,7 +9,7 @@
 
 <h1>Profile for <b>{{ profilename }}</b></h1>
 <br />
-{% if session.user_id %}
+{% if session.admin %}
 <form action="/admin" method="POST">
     <button name="profilename" value="{{ profilename }}" class="btn btn-danger">
         Give user admin rights </button>

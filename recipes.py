@@ -1,7 +1,7 @@
 from flask import session
 from db import db
 
-# Getting, adding and deleting recipes
+# Recipes for front page
 
 def get_all():
     try:
@@ -43,6 +43,8 @@ def get_commented():
         return result.fetchall()
     except:
         return False
+
+# Getting, adding and deleting a recipe
 
 def get(recipe_id):
     try:
@@ -92,6 +94,15 @@ def get_types():
 
 # Getting recipes for profile page
 
+def get_profile_id(profilename):
+    try:
+        sql = '''SELECT U.id FROM recipes R, users U
+        WHERE R.creator_id=U.id AND U.profilename=:profilename'''
+        result = db.session.execute(sql,{'profilename':profilename})
+        return result.fetchone()
+    except:
+        return False
+
 def get_recipes(profilename):
     try:
         sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
@@ -103,15 +114,6 @@ def get_recipes(profilename):
         ORDER BY R.created_at DESC'''
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchall()
-    except:
-        return False
-
-def get_profile_id(profilename):
-    try:
-        sql = '''SELECT U.id FROM recipes R, users U
-        WHERE R.creator_id=U.id AND U.profilename=:profilename'''
-        result = db.session.execute(sql,{'profilename':profilename})
-        return result.fetchone()
     except:
         return False
 
@@ -147,7 +149,8 @@ def get_profile_commented(profilename):
     except:
         return False
 
-# Getting, counting, adding and deleting comments
+# Comments: comment count for lists, comments for recipe page, 
+# adding and deleting a comment
 
 def get_comments_count(recipe_id):
     try:
@@ -159,7 +162,7 @@ def get_comments_count(recipe_id):
 
 def get_comments(recipe_id):
     try:
-        sql = '''SELECT C.id, C.title, C.comment, U.profilename, 
+        sql = '''SELECT C.id, C.title, C.comment, U.profilename,
         C.created_at, C.author_id, C.recipe_id
         FROM comments C, users U
         WHERE C.recipe_id=:recipe_id AND C.author_id=U.id AND C.visible=1
@@ -193,10 +196,17 @@ def add_comment(title, comment, recipe_id):
 
 def delete_comment(comment_id, recipe_id):
     try:
-        author_id = session['user_id']
-        sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id AND author_id=:author_id'
-        db.session.execute(sql,{'comment_id':comment_id, 'author_id':author_id})
+        if session['admin']:
+            print('osuuko')
+            sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id'
+            db.session.execute(sql,{'comment_id':comment_id})
+        else:
+            print('entäs tämä')
+            author_id = session['user_id']
+            sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id AND author_id=:author_id'
+            db.session.execute(sql,{'comment_id':comment_id, 'author_id':author_id})
         db.session.commit()
+        print('onnistuiko?')
     except:
         return False
     update_recipe_comment_count(recipe_id)
@@ -213,7 +223,7 @@ def update_recipe_comment_count(recipe_id):
         return False
     return True
 
-# Getting, counting, adding and updating likes
+# Likes: like count for lists, like for recipe page 
 
 def get_like_count(recipe_id):
     try:

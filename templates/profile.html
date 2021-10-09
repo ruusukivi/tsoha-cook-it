@@ -28,7 +28,7 @@
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
 
-        {% if latest|length > 0 %}
+        {% if latest %}
         {% for recipe in latest %}
             {% include 'card.html' %}
         {% endfor %}
@@ -41,7 +41,7 @@
         {% endif %}
     </div>
     <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
-        {% if popular|length > 0 %}
+        {% if popular %}
         {% for recipe in popular %}
             {% include 'card.html' %}
         {% endfor %}
@@ -54,7 +54,7 @@
         {% endif %}
     </div>
     <div class="tab-pane fade" id="commented" role="tabpanel" aria-labelledby="commented-tab">
-        {% if commented|length > 0 %}
+        {% if commented %}
         {% for recipe in commented %}
             {% include 'card.html' %}
         {% endfor %}

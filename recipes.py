@@ -66,6 +66,13 @@ def delete_recipe(recipe_id):
         return False
     return True
 
+# Getting recipe types
+
+def get_types():
+    sql = 'SELECT name, id FROM types ORDER BY id'
+    result = db.session.execute(sql)
+    return result.fetchall()
+
 # Getting recipes for profile page
 
 def get_recipes(profilename):
@@ -81,37 +88,47 @@ def get_recipes(profilename):
     except:
         return False
 
-def get_profile_likes(profilename):
+def get_profile_id(profilename):
     try:
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type,U.profilename,
-        R.created_at, R.like_count, R.comment_count
-        FROM recipes R, users U, types T
-        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1
-        GROUP BY R.id, U.profilename, T.name ORDER BY like_count DESC;'''
+        sql = '''SELECT U.id FROM recipes R, users U
+        WHERE R.creator_id=U.id AND U.profilename=:profilename'''
         result = db.session.execute(sql,{'profilename':profilename})
+        return result.fetchone()
+    except:
+        return False
+
+def get_profile_likes(profilename):
+    liker = get_profile_id(profilename)[0]
+    try:
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
+        R.created_at, R.like_count, R.comment_count 
+        FROM recipes R JOIN likes L ON L.recipe_id=R.id 
+        LEFT JOIN users U ON R.creator_id=U.id 
+        LEFT JOIN types T ON T.id=R.typeid 
+        WHERE R.visible=1 AND L.liker_id=:liker 
+        GROUP BY R.id, U.id, T.id
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql, {'liker':liker})
         return result.fetchall()
     except:
         return False
 
 def get_profile_commented(profilename):
+    commenter = get_profile_id(profilename)[0]
+    print(commenter)
     try:
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type,U.profilename,
-        R.created_at, R.like_count, R.comment_count
-        FROM recipes R, users U, types T
-        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1
-        GROUP BY R.id, U.profilename, T.name ORDER BY like_count DESC;'''
-        result = db.session.execute(sql,{'profilename':profilename})
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
+        R.created_at, R.like_count, R.comment_count 
+        FROM recipes R JOIN comments C ON C.recipe_id=R.id 
+        LEFT JOIN users U ON R.creator_id=U.id 
+        LEFT JOIN types T ON T.id=R.typeid 
+        WHERE R.visible=1 AND C.author_id=:commenter 
+        GROUP BY R.id, U.id, T.id
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql, {'commenter':commenter})
         return result.fetchall()
     except:
         return False
-
-
-# Getting types
-
-def get_types():
-    sql = 'SELECT name, id FROM types ORDER BY id'
-    result = db.session.execute(sql)
-    return result.fetchall()
 
 # Getting, counting, adding and deleting comments
 

@@ -2,7 +2,6 @@
 {% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
 
-
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
@@ -28,7 +27,6 @@
                 | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
         </p>
 
-        <pre>{{ recipe}}</pre>
         <p class="card-text"> {{ recipe.description }}</p>
 
         <h3>Ingredients</h3>

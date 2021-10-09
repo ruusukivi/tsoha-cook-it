@@ -56,6 +56,7 @@ def get_profile(profilename):
         profile_recipes = recipes.get_recipes(profilename)
         profile_likes = recipes.get_profile_likes(profilename)
         profile_commented = recipes.get_profile_commented(profilename)
+        print(profile_commented)
         return render_template('profile.html', latest=profile_recipes,
         popular=profile_likes, commented=profile_commented, profilename=profilename)
     return render_template('error.html', message='User was not found.')

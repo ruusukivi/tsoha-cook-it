@@ -48,5 +48,4 @@ def validate_comment(title, comment, recipe_id):
     if not recipes.get(recipe_id):
         flash('Oops! The recipe does not exist anymore!', 'error')
         return False
-    print('Validointi onnistui')
     return True

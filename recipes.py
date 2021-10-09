@@ -17,9 +17,19 @@ def get_popular():
     sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
     U.profilename, R.created_at,  R.like_count, R.comment_count
     FROM recipes R, users U, types T
-    WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1
+    WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.like_count>0
     GROUP BY R.id, U.profilename, T.name
     ORDER BY R.like_count DESC'''
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+def get_commented():
+    sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
+    U.profilename, R.created_at, R.like_count, R.comment_count
+    FROM recipes R, users U, types T
+    WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.comment_count>0
+    GROUP BY R.id, U.profilename, T.name
+    ORDER BY R.comment_count DESC'''
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -134,6 +144,18 @@ def add_comment(title, comment, recipe_id):
         db.session.commit()
     except:
         return False
+    update_recipe_comment_count(recipe_id)
+    return True
+
+def update_recipe_comment_count(recipe_id):
+    try:
+        comment_count = get_comments_count(recipe_id)[0]
+        print(comment_count)
+        sql = 'UPDATE recipes SET comment_count=:comment_count WHERE id=:recipe_id'
+        db.session.execute(sql, {'recipe_id':recipe_id, 'comment_count':comment_count})
+        db.session.commit()
+    except:
+        return False
     return True
 
 # Getting, counting, adding and deleting likes
@@ -155,7 +177,6 @@ def like_recipe(recipe_id):
             sql = 'DELETE FROM likes WHERE recipe_id=:recipe_id AND liker_id=:liker_id'
             db.session.execute(sql,{'recipe_id':recipe_id, 'liker_id':liker_id})
             db.session.commit()
-            update_recipe_like_count(recipe_id)
         except:
             return False
     else:
@@ -165,10 +186,15 @@ def like_recipe(recipe_id):
             db.session.commit()
         except:
             return False
+    update_recipe_like_count(recipe_id)
     return True
 
 def update_recipe_like_count(recipe_id):
-    count = get_like_count(recipe_id) + 1
-    sql = 'UPDATE recipe SET like_count=:count WHERE id=:recipe_id'
-    result = db.session.execute(sql, {'recipe_id':recipe_id , 'like_count':count})
-    return result.fetchone()
+    try:
+        like_count = get_like_count(recipe_id)[0]
+        sql = 'UPDATE recipes SET like_count=:like_count WHERE id=:recipe_id'
+        db.session.execute(sql, {'recipe_id':recipe_id , 'like_count':like_count})
+        db.session.commit()
+    except:
+        return False
+    return True

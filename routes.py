@@ -7,9 +7,12 @@ import validation
 @app.route('/')
 def index():
     latest = recipes.get_all()
-    most_liked = recipes.get_popular()
+    popular = recipes.get_popular()
+    commented = recipes.get_commented()
+    print(commented)
     types = recipes.get_types()
-    return render_template('index.html', latest=latest, popular=most_liked, types=types)
+    return render_template('index.html', latest=latest, popular=popular, commented=commented,
+    types=types)
 
 
 @app.route('/login',methods=['GET', 'POST'])
@@ -85,7 +88,6 @@ def addcomment():
     recipe = form['recipe_id']
     if request.method == 'POST':
         users.check_csrf()
-        print('Kommentin postaus')
         if not validation.validate_comment(title, comment, recipe):
             return redirect(url_for('get_recipe', recipe_id=recipe))
         if recipes.add_comment(title, comment, recipe):

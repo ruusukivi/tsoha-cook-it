@@ -36,8 +36,8 @@ def logout():
 @app.route('/admin', methods=['POST'])
 def grant_admin_rights():
     if request.method == 'POST':
+        users.check_csrf()
         profilename = request.form['profilename']
-        print('tulee perille')
         if users.update_admin_rights(profilename):
             flash('Admin rights granted!', 'success')
             return redirect(url_for('get_profile', profilename=profilename))
@@ -67,7 +67,6 @@ def get_profile(profilename):
         profile_recipes = recipes.get_recipes(profilename)
         profile_likes = recipes.get_profile_likes(profilename)
         profile_commented = recipes.get_profile_commented(profilename)
-        print(profile_commented)
         return render_template('profile.html', latest=profile_recipes,
         popular=profile_likes, commented=profile_commented, profilename=profilename)
     return render_template('error.html', message='User was not found.')

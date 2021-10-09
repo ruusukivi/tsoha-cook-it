@@ -74,9 +74,13 @@ def add_recipe(name, description, typeid, steps, ingredients):
 
 def delete_recipe(recipe_id):
     try:
-        creator_id = session['user_id']
-        sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id AND creator_id=:creator_id'
-        db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id})
+        if session['admin']:
+            sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id'
+            db.session.execute(sql,{'recipe_id':recipe_id})
+        else:
+            creator_id = session['user_id']
+            sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id AND creator_id=:creator_id'
+            db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id})
         db.session.commit()
     except:
         return False
@@ -96,8 +100,7 @@ def get_types():
 
 def get_profile_id(profilename):
     try:
-        sql = '''SELECT U.id FROM recipes R, users U
-        WHERE R.creator_id=U.id AND U.profilename=:profilename'''
+        sql = 'SELECT id FROM users WHERE profilename=:profilename'
         result = db.session.execute(sql,{'profilename':profilename})
         return result.fetchone()
     except:
@@ -120,13 +123,13 @@ def get_recipes(profilename):
 def get_profile_likes(profilename):
     try:
         liker = get_profile_id(profilename)[0]
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
-        R.created_at, R.like_count, R.comment_count 
-        FROM recipes R JOIN likes L ON L.recipe_id=R.id 
-        LEFT JOIN users U ON R.creator_id=U.id 
+        sql = '''SELECT L.liker_id, R.id, R.name, R.description, T.name AS type,
+        U.profilename, R.created_at, R.like_count, R.comment_count 
+        FROM likes L JOIN recipes R ON L.recipe_id=R.id 
+        LEFT JOIN users U ON U.id=L.liker_id 
         LEFT JOIN types T ON T.id=R.typeid 
         WHERE R.visible=1 AND L.liker_id=:liker 
-        GROUP BY R.id, U.id, T.id
+        GROUP BY L.liker_id, R.id, U.id, T.id
         ORDER BY R.created_at DESC'''
         result = db.session.execute(sql, {'liker':liker})
         return result.fetchall()
@@ -135,21 +138,21 @@ def get_profile_likes(profilename):
 
 def get_profile_commented(profilename):
     try:
-        commenter = get_profile_id(profilename)[0]
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
-        R.created_at, R.like_count, R.comment_count 
-        FROM recipes R JOIN comments C ON C.recipe_id=R.id 
-        LEFT JOIN users U ON R.creator_id=U.id 
+        author = get_profile_id(profilename)[0]
+        sql = '''SELECT C.author_id, R.id, R.name, R.description, T.name AS type,
+        U.profilename, R.created_at, R.like_count, R.comment_count 
+        FROM comments C JOIN recipes R ON C.author_id=R.id 
+        LEFT JOIN users U ON U.id=C.author_id 
         LEFT JOIN types T ON T.id=R.typeid 
-        WHERE R.visible=1 AND C.author_id=:commenter 
-        GROUP BY R.id, U.id, T.id
+        WHERE R.visible=1 AND C.visible=1 AND C.author_id=:author 
+        GROUP BY C.author_id, R.id, U.id, T.id
         ORDER BY R.created_at DESC'''
-        result = db.session.execute(sql, {'commenter':commenter})
+        result = db.session.execute(sql, {'author':author})
         return result.fetchall()
     except:
         return False
 
-# Comments: comment count for lists, comments for recipe page, 
+# Comments: comment count for lists, comments for recipe page,
 # adding and deleting a comment
 
 def get_comments_count(recipe_id):
@@ -197,16 +200,13 @@ def add_comment(title, comment, recipe_id):
 def delete_comment(comment_id, recipe_id):
     try:
         if session['admin']:
-            print('osuuko')
             sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id'
             db.session.execute(sql,{'comment_id':comment_id})
         else:
-            print('entäs tämä')
             author_id = session['user_id']
             sql = 'UPDATE comments SET visible=0 WHERE id=:comment_id AND author_id=:author_id'
             db.session.execute(sql,{'comment_id':comment_id, 'author_id':author_id})
         db.session.commit()
-        print('onnistuiko?')
     except:
         return False
     update_recipe_comment_count(recipe_id)
@@ -215,7 +215,6 @@ def delete_comment(comment_id, recipe_id):
 def update_recipe_comment_count(recipe_id):
     try:
         comment_count = get_comments_count(recipe_id)[0]
-        print(comment_count)
         sql = 'UPDATE recipes SET comment_count=:comment_count WHERE id=:recipe_id'
         db.session.execute(sql, {'recipe_id':recipe_id, 'comment_count':comment_count})
         db.session.commit()
@@ -223,7 +222,7 @@ def update_recipe_comment_count(recipe_id):
         return False
     return True
 
-# Likes: like count for lists, like for recipe page 
+# Likes: like count for lists, like for recipe page
 
 def get_like_count(recipe_id):
     try:

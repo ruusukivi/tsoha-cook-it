@@ -10,12 +10,18 @@
 <h1>Profile for <b>{{ profilename }}</b></h1>
 <br />
 {% if session.admin %}
-<form action="/admin" method="POST">
-    <button name="profilename" value="{{ profilename }}" class="btn btn-danger">
-        Give user admin rights </button>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
+    {% if not session.profilename == profilename %}
+    <form action="/admin" method="POST">
+        <button name="profilename" value="{{ profilename }}" class="btn btn-danger">
+            Give user admin rights </button>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+    
+{% else %}
+<div class="d-inline p-2 bg-danger text-white"> <i class="fas fa-exclamation-triangle"> </i> You are an admin user </div>  
 <br/>
+{% endif %}
+<br />
 {% endif %}
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
@@ -37,7 +43,7 @@
 
         {% if latest %}
         {% for recipe in latest %}
-            {% include 'card.html' %}
+        {% include 'card.html' %}
         {% endfor %}
         {% else %}
         <div class="card">
@@ -50,7 +56,7 @@
     <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
         {% if popular %}
         {% for recipe in popular %}
-            {% include 'card.html' %}
+        {% include 'card.html' %}
         {% endfor %}
         {% else %}
         <div class="card">
@@ -63,7 +69,7 @@
     <div class="tab-pane fade" id="commented" role="tabpanel" aria-labelledby="commented-tab">
         {% if commented %}
         {% for recipe in commented %}
-            {% include 'card.html' %}
+        {% include 'card.html' %}
         {% endfor %}
         {% else %}
         <div class="card">

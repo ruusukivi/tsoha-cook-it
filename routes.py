@@ -33,6 +33,17 @@ def logout():
     flash('You are now logged out!', 'success')
     return redirect('/')
 
+@app.route('/admin', methods=['POST'])
+def grant_admin_rights():
+    if request.method == 'POST':
+        profilename = request.form['profilename']
+        print('tulee perille')
+        if users.update_admin_rights(profilename):
+            flash('Admin rights granted!', 'success')
+            return redirect(url_for('get_profile', profilename=profilename))
+    flash('Admin rights could not be given.')
+    return redirect(url_for('get_profile', profilename=profilename))
+
 @app.route('/signup',methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':
@@ -47,7 +58,8 @@ def signup():
         if users.signup(username, password, profilename):
             flash('Sign up done! Please log in', 'success')
             return render_template('login.html')
-    return render_template('error.html', message='Sign up failed.')
+    flash('Sign up failed. Please try again later.')
+    return render_template('signup.html')
 
 @app.route('/profile/<string:profilename>',methods=['GET'])
 def get_profile(profilename):
@@ -111,6 +123,7 @@ def like_recipe():
         users.check_csrf()
         recipe_id = request.form['recipe_id']
         if recipes.like_recipe(recipe_id):
+            flash('Done! Your like is now updated ', 'error')
             return redirect(url_for('get_recipe', recipe_id=recipe_id))
     return render_template('error.html', message='Something went sideways.')
 

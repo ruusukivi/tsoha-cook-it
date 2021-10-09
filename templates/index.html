@@ -30,9 +30,15 @@
 
 <div class="tab-content" id="nav-tabContent">
   <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
+    {% if latest %}
     {% for recipe in latest %}
     {% include 'card.html' %}
     {% endfor %}
+    {% else %}
+    <div class="card">
+      <div class="card-body">No recipes found.</div>
+    </div>
+    {% endif %}
   </div>
   <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
     {% if popular %}

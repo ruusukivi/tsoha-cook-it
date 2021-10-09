@@ -37,7 +37,7 @@
         <p class="card-text">
             <pre>{{ recipe.steps }}</pre>
         </p>
-        {% if session.user_id == recipe.creator_id %}
+        {% if (session.user_id == recipe.creator_id) or (session.admin) %}
         <form action="/recipe/delete" method="POST">
             <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -50,9 +50,9 @@
             <div class="card-body">
                 <h5 class="card-title">{{ comment.title}}</h5>
                 <div class="card-subtitle mb-2"><small class="text-muted">{{ comment.created_at.strftime("%Y-%m-%d %H:%M") }}
-                        | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a></small></div>
+                        | <a href="/profile/{{ comment.profilename }}">{{ comment.profilename }}</a></small></div>
                 <p class="card-text">{{ comment.comment}}</p>
-                {% if session.user_id == comment.author_id %}
+                {% if (session.user_id == comment.author_id) or (session.admin) %}
                 <form action="/recipe/comment/delete" method="POST">
                     <button name="id" value="{{ comment.id }}" class="btn btn-outline-danger">Delete comment</button>
                     <input type="hidden" name="recipe_id" value="{{ comment.recipe_id }}">

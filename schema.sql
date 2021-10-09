@@ -2,7 +2,8 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    profilename TEXT NOT NULL UNIQUE
+    profilename TEXT NOT NULL UNIQUE,
+    admin BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE types (

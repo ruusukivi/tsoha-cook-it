@@ -22,18 +22,39 @@
     <a class="nav-link" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular"
       aria-selected="false">What's trending</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" id="commented-tab" data-toggle="tab" href="#commented" role="tab" aria-controls="commented"
+      aria-selected="false">What's buzzing</a>
+  </li>
 </ul>
 
 <div class="tab-content" id="nav-tabContent">
   <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
     {% for recipe in latest %}
-      {% include 'card.html' %}
+    {% include 'card.html' %}
     {% endfor %}
   </div>
   <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+    {% if popular %}
     {% for recipe in popular %}
-     {% include 'card.html' %}
+    {% include 'card.html' %}
     {% endfor %}
+    {% else %}
+    <div class="card">
+      <div class="card-body">No liked recipes yet.</div>
+    </div>
+    {% endif %}
+  </div>
+  <div class="tab-pane fade" id="commented" role="tabpanel" aria-labelledby="commented-tab">
+    {% if commented %}
+    {% for recipe in commented %}
+    {% include 'card.html' %}
+    {% endfor %}
+    {% else %}
+    <div class="card">
+      <div class="card-body">No commented recipes yet.</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 

@@ -2,7 +2,6 @@
 {% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
 
-
 {% if message %}
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
@@ -14,19 +13,18 @@
         <p class="card-text">
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
-
                 <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
-                    Like <i class="fa fa-heart"></i> {{ likes.count }} </button>
+                    Like recipe </button>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
-            {% else %}
-            <i class="fa fa-heart"></i> Likes {{ likes.count }}
             {% endif %}
         </p>
 
-        <p class="small">
+        <p >
             <a href="/">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
-                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a>
+                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
+                | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
+                | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
         </p>
 
         <p class="card-text"> {{ recipe.description }}</p>
@@ -39,16 +37,31 @@
         <p class="card-text">
             <pre>{{ recipe.steps }}</pre>
         </p>
-
         {% if session.user_id == recipe.creator_id %}
         <form action="/recipe/delete" method="POST">
-        <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
-        <br />
         {% endif %}
-
+        <br/>
+        {% include 'newcomment.html' %}
+        {% for comment in all_comments %}
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">{{ comment.title}}</h5>
+                <div class="card-subtitle mb-2"><small class="text-muted">{{ comment.created_at.strftime("%Y-%m-%d %H:%M") }}
+                        | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a></small></div>
+                <p class="card-text">{{ comment.comment}}</p>
+                {% if session.user_id == comment.author_id %}
+                <form action="/recipe/comment/delete" method="POST">
+                    <button name="id" value="{{ comment.id }}" class="btn btn-outline-danger">Delete comment</button>
+                    <input type="hidden" name="recipe_id" value="{{ comment.recipe_id }}">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
-
 {% endblock %}

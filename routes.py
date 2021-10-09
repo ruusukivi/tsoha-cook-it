@@ -7,9 +7,12 @@ import validation
 @app.route('/')
 def index():
     latest = recipes.get_all()
-    most_liked = recipes.get_popular()
+    popular = recipes.get_popular()
+    commented = recipes.get_commented()
     types = recipes.get_types()
-    return render_template('index.html', latest=latest, popular=most_liked, types=types)
+    return render_template('index.html', latest=latest, popular=popular, commented=commented,
+    types=types)
+
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -51,8 +54,10 @@ def get_profile(profilename):
     if request.method == 'GET':
         profile_recipes = recipes.get_recipes(profilename)
         profile_likes = recipes.get_profile_likes(profilename)
+        profile_commented = recipes.get_profile_commented(profilename)
+        print(profile_commented)
         return render_template('profile.html', latest=profile_recipes,
-        popular=profile_likes, profilename=profilename)
+        popular=profile_likes, commented=profile_commented, profilename=profilename)
     return render_template('error.html', message='User was not found.')
 
 @app.route('/newrecipe',methods=['GET', 'POST'])
@@ -75,13 +80,29 @@ def addrecipe():
     flash('Adding the recipe failed. Please try again later.')
     return render_template("/newrecipe.html", form=form, types=types)
 
+@app.route('/newcomment',methods=['POST'])
+def addcomment():
+    form = request.form
+    title = form['title']
+    comment = form['comment']
+    recipe = form['recipe_id']
+    if request.method == 'POST':
+        users.check_csrf()
+        if not validation.validate_comment(title, comment, recipe):
+            return redirect(url_for('get_recipe', recipe_id=recipe))
+        if recipes.add_comment(title, comment, recipe):
+            return redirect(url_for('get_recipe', recipe_id=recipe))
+    flash('Adding comment failed. Please try again later.', 'error')
+    return redirect(url_for('get_recipe', recipe_id=recipe))
 
 @app.route('/recipe/<int:recipe_id>',methods=['GET'])
 def get_recipe(recipe_id):
     if request.method == 'GET':
         recipe = recipes.get(recipe_id)
-        likes = recipes.get_likes(recipe_id)
-        return render_template('recipe.html', recipe=recipe, likes=likes)
+        all_comments = recipes.get_comments(recipe_id)
+        comments = recipes.get_comments_count(recipe_id)
+        return render_template('recipe.html', recipe=recipe,
+        all_comments=all_comments, comments=comments)
     return render_template('error.html', message='Recipe was not found.')
 
 @app.route('/recipe/like',methods=['POST'])
@@ -100,6 +121,18 @@ def delete_recipe():
         users.check_csrf()
         if recipes.delete_recipe(recipe_id):
             flash('Done! You have now deleted the recipe.')
-            return redirect("/")
+            return redirect('/')
     flash('You can delete only you own recipes.', 'error')
     return redirect(url_for('get_recipe', recipe=recipe_id))
+
+@app.route('/recipe/comment/delete',methods=['POST'])
+def delete_comment():
+    comment_id = request.form['id']
+    recipe_id = request.form['recipe_id']
+    if request.method == 'POST':
+        users.check_csrf()
+        if recipes.delete_comment(comment_id, recipe_id):
+            flash('Done! You have now deleted the comment.')
+            return redirect(url_for('get_recipe', recipe_id=recipe_id))
+    flash('You can delete only your own comments.', 'error')
+    return redirect(url_for('get_recipe', recipe_id=recipe_id))

@@ -16,7 +16,7 @@ Jos haluat testata lokaalisti, varmista ensin, että ympäristössä Python3, Fl
 
 ## COOK IT -reseptihaku
 
-Cook it on sovellus, johon voi tallettaa reseptejä sekä hakea ja kommentoida niitä.
+Cook It on sovellus, johon voi tallettaa reseptejä sekä hakea ja kommentoida niitä.
 
 ### Käyttötapaukset
 
@@ -25,15 +25,18 @@ Cook it on sovellus, johon voi tallettaa reseptejä sekä hakea ja kommentoida n
 - :white_check_mark: Palvelusta voi kirjautua ulos
 - :white_check_mark: Kirjautunut käyttäjä voi lisätä reseptejä
 - :white_check_mark: Reseptille voi lisätä nimen, tyypin, kuvauksen, ainekset ja tekovaiheet
-- :white_check_mark: Reseptejä voi selata tuoreusjärjestyksessä
+- :white_check_mark: Reseptejä voi selata aikajärjestyksessä
 - :white_check_mark: Jokaiselle reseptille on oma sivunsa
 - :white_check_mark: Käyttäjä voi poistaa lisäämänsä reseptit
 - :white_check_mark: Resepteistä voi tykätä jos on kirjautunut
-- :white_check_mark: Käyttäjällä on oma profiilisivu
-- :white_check_mark: Resepteistä voi selata suosituimmuus-järjestyksessä
+- :white_check_mark: Käyttäjällä on oma profiilisivu, jossa on hänen lisäämänsä reseptit
+- :white_check_mark: Reseptejä voi selata suosituimmuus-järjestyksessä (eniten tykkäyksiä)
+- :white_check_mark: Kirjautunut käyttäjä voi kommentoida reseptejä
+- :white_check_mark: Reseptejä voi selata kommenttien määrän perusteella
+- :white_check_mark: Profiilisivulla voi selata käyttäjän tykkäämiä viestejä
+- :white_check_mark: Profiilisivulla voi selata käyttäjän kommentoimia viestejä
+- :white_check_mark: Käyttäjä voi poistaa lisäämänsä kommentit
 
-- :white_large_square: Reseptejä voi kommentoida
-- :white_large_square: Käyttäjä voi poistaa lisäämänsä kommentit
 - :white_large_square: Palveluun voi luoda admin-tunnuksia
 - :white_large_square: Admin-käyttäjä voi poistaa kenen tahansa reseptit ja kommentit
 - :white_large_square: Reseptejä voi hakea nimen perusteella

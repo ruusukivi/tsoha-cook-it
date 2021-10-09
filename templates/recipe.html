@@ -24,10 +24,11 @@
         <p >
             <a href="/">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
                 href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
-                | <i class="fa fa-heart"></i> Likes {{ likes.count }}
-                | <i class="fa fa-comment"></i> Comments {{ comments.count }}
+                | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
+                | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
         </p>
 
+        <pre>{{ recipe}}</pre>
         <p class="card-text"> {{ recipe.description }}</p>
 
         <h3>Ingredients</h3>
@@ -44,18 +45,18 @@
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
         {% endif %}
-    </div>
-
-    {% include 'newcomment.html' %}
-    {% for comment in all_comments %}
-    <div class="card bg-light">
-        <div class="card-body">
-            <h5 class="card-title">{{ comment.title}}</h5>
-            <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
-                    | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a></small></div>
-            <p class="card-text">{{ comment.comment}}</p>
+        <br/>
+        {% include 'newcomment.html' %}
+        {% for comment in all_comments %}
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">{{ comment.title}}</h5>
+                <div class="card-subtitle mb-2"><small class="text-muted">{{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
+                        | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a></small></div>
+                <p class="card-text">{{ comment.comment}}</p>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}

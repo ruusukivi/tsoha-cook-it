@@ -4,8 +4,8 @@
         <div class="card-subtitle mb-2"><small
                 class="text-muted">{{ recipe.type }} | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }}
                 | <a href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
-                | <i class="fa fa-heart"></i> Likes {{ recipe.popularity }}
-                | <i class="fa fa-comment"></i> Comments {{ recipe.comments }}
+                | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
+                | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
             </small></div>
         <p class="card-text"><a href="/recipe/{{ recipe.id }}" class="text-decoration-none text-dark">{{ recipe.description }}</a></p>
         <a href="/recipe/{{ recipe.id }}" class="card-link">Show recipe</a>

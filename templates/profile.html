@@ -19,6 +19,10 @@
         <a class="nav-link" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular"
             aria-selected="false">Recipes liked</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" id="commented-tab" data-toggle="tab" href="#commented" role="tab" aria-controls="commented"
+            aria-selected="false">Recipes commented</a>
+    </li>
 </ul>
 
 <div class="tab-content" id="nav-tabContent">
@@ -48,7 +52,19 @@
             </div>
         </div>
         {% endif %}
-
+    </div>
+    <div class="tab-pane fade" id="commented" role="tabpanel" aria-labelledby="commented-tab">
+        {% if commented|length > 0 %}
+        {% for recipe in commented %}
+            {% include 'card.html' %}
+        {% endfor %}
+        {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text">No recipes commented by this user.</p>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     {% endblock %}

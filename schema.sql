@@ -19,13 +19,15 @@ CREATE TABLE recipes (
     ingredients TEXT NOT NULL,
     creator_id INTEGER REFERENCES users,
     created_at TIMESTAMP DEFAULT NOW(),
+    like_count INTEGER DEFAULT 0,
+    comment_count INTEGER DEFAULT 0,
     visible INTEGER NOT NULL
 );
 
 CREATE TABLE likes (
     id SERIAL PRIMARY KEY,
-    userid INTEGER REFERENCES users,
-    recipe INTEGER REFERENCES recipes
+    liker_id INTEGER REFERENCES users,
+    recipe_id INTEGER REFERENCES recipes
 );
 
 CREATE TABLE comments (

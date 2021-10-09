@@ -52,8 +52,9 @@ def get_profile(profilename):
     if request.method == 'GET':
         profile_recipes = recipes.get_recipes(profilename)
         profile_likes = recipes.get_profile_likes(profilename)
+        profile_commented = recipes.get_profile_commented(profilename)
         return render_template('profile.html', latest=profile_recipes,
-        popular=profile_likes, profilename=profilename)
+        popular=profile_likes, commented=profile_commented, profilename=profilename)
     return render_template('error.html', message='User was not found.')
 
 @app.route('/newrecipe',methods=['GET', 'POST'])
@@ -96,10 +97,9 @@ def addcomment():
 def get_recipe(recipe_id):
     if request.method == 'GET':
         recipe = recipes.get(recipe_id)
-        likes = recipes.get_likes(recipe_id)
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
-        return render_template('recipe.html', recipe=recipe, likes=likes, 
+        return render_template('recipe.html', recipe=recipe, 
         all_comments=all_comments, comments=comments)
     return render_template('error.html', message='Recipe was not found.')
 

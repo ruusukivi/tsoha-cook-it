@@ -4,15 +4,15 @@ Projekti on tehty tietojenkäsittelytieteen harjoitustyökurssia varten, jossa a
 
 Sovellus Herokussa: https://tsoha-cook-it.herokuapp.com/
 
-Peruskäyttäjä:
+Admin-käyttäjä:
 kt: testi@mailinator.com
 ss: 1234567890
 
 Jos haluat testata lokaalisti, varmista ensin, että ympäristössä Python3, Flask ja Postgres asennettuina.
-1. Alusta tietokantataulut: psql < schema.sql
+1. Alusta tietokantataulut: psql < /sql/schema.sql
 2. Käynnistä sovellus: flask run
 3. Luo itsellesi käyttäjätunnus http://127.0.0.1:5000/signup 
-3. Aja kantaan testisisältöä: psql < data.sql
+3. Aja kantaan testisisältöä: psql < /sql/data.sql
 
 ## COOK IT -reseptihaku
 
@@ -38,9 +38,10 @@ Cook It on sovellus, johon voi tallettaa reseptejä sekä hakea ja kommentoida n
 - :white_check_mark: Käyttäjä voi poistaa lisäämänsä kommentit
 - :white_check_mark: Käyttäjälle voi lisätä admin-oikeudet profiilisivulta jos on admin
 - :white_check_mark: Admin-käyttäjä voi poistaa kenen tahansa reseptit ja kommentit
+- :white_check_mark: Reseptejä voi hakea nimen perusteella
+- :white_check_mark: Reseptejä voi hakea kuvauksen perusteella
+- :white_check_mark:: Reseptejä voi hakea tyypin perusteella
 
-- :white_large_square: Reseptejä voi hakea tyypin perusteella
-- :white_large_square: Reseptejä voi hakea nimen perusteella
 - :white_large_square: Reseptiin voi lisätä kuvan
 - :white_large_square: Admin-käyttäjä voi valita Featured-reseptejä etusivulle
 

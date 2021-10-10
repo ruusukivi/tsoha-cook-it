@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %} Search{% endblock %}
+{% block content %}
+
+{% if message %}
+<div class="alert alert-warning">{{ message }}</div>
+{% endif %}
+
+<h1>Recipes by type</h1>
+
+<div class="tab-content" id="nav-tabContent">
+    {% if not session.user_id %}
+    <p>You are not logged in. Please <a href="/login">log in</a> to search recipes. </p>
+    {% else %}
+    {% for type in types %}
+    <a href="/type/{{ type.id }}"><button type="button" class="btn btn-light"> {{ type.name }} </button></a> 
+    {% endfor %}
+    <br/><br />
+    <div class="tab-pane fade show active" id="search-results" >
+        {% include 'search_result.html' %}
+    </div>
+    {% endif %}
+</div>
+
+<!--HTMX for dynamics search-->
+<script src="https://unpkg.com/htmx.org@0.0.4"></script>
+{% endblock %}

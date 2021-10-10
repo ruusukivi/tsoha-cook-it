@@ -5,8 +5,8 @@ from db import db
 
 def get_all():
     try:
-        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps,
-        T.name AS type,U.profilename, R.created_at, R.like_count, R.comment_count
+        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
+        T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 
         GROUP BY R.id, U.id, T.id 
@@ -20,7 +20,7 @@ def get_all():
 def get_popular():
     try:
         sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
-        U.profilename, R.created_at,  R.like_count, R.comment_count
+        T.id as typeid, U.profilename, R.created_at,  R.like_count, R.comment_count
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.like_count>0
         GROUP BY R.id, U.id, T.id
@@ -34,7 +34,7 @@ def get_popular():
 def get_commented():
     try:
         sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
-        U.profilename, R.created_at, R.like_count, R.comment_count
+        T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.comment_count>0
         GROUP BY R.id, U.profilename, T.name
@@ -49,7 +49,7 @@ def get_commented():
 def get(recipe_id):
     try:
         sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, R.creator_id,
-        T.name as type, U.profilename, R.created_at, R.like_count, R.comment_count
+        T.name as type, T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count
         FROM recipes R, users U, types T
         WHERE R.id=:recipe_id AND R.creator_id=U.id AND T.id=R.typeid AND R.visible=1'''
         result = db.session.execute(sql, {"recipe_id":recipe_id})
@@ -62,8 +62,8 @@ def add_recipe(name, description, typeid, steps, ingredients):
     visible = 1
     try:
         sql = '''INSERT INTO recipes (name,description,typeid,steps,ingredients,
-        creator_id,created_at,visible) VALUES (:name,:description,:typeid,
-        :steps,:ingredients,:creator_id,now(),:visible)'''
+        creator_id,created_at,visible)
+        VALUES (:name,:description,:typeid,:steps,:ingredients,:creator_id,now(),:visible)'''
         db.session.execute(sql,
         {'name':name,'description':description,'typeid':typeid,
         'steps':steps,'ingredients':ingredients,'creator_id':creator_id,'visible':visible})
@@ -96,6 +96,14 @@ def get_types():
     except:
         return False
 
+def get_type_name(typeid):
+    try:
+        sql = 'SELECT name FROM types WHERE id=:typeid'
+        result = db.session.execute(sql, {'typeid':typeid})
+        return result.fetchone()
+    except:
+        return False
+
 # Getting recipes for profile page
 
 def get_profile_id(profilename):
@@ -108,8 +116,8 @@ def get_profile_id(profilename):
 
 def get_recipes(profilename):
     try:
-        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
-        R.created_at, R.like_count, R.comment_count
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, T.id as typeid,
+        U.profilename, R.created_at, R.like_count, R.comment_count
         FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
         LEFT JOIN types T ON T.id=R.typeid
         WHERE R.visible=1 AND U.profilename=:profilename
@@ -124,7 +132,7 @@ def get_profile_likes(profilename):
     try:
         liker = get_profile_id(profilename)[0]
         sql = '''SELECT L.liker_id, R.id, R.name, R.description, T.name AS type,
-        U.profilename, R.created_at, R.like_count, R.comment_count 
+        T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count 
         FROM likes L JOIN recipes R ON L.recipe_id=R.id 
         LEFT JOIN users U ON U.id=L.liker_id 
         LEFT JOIN types T ON T.id=R.typeid 
@@ -140,7 +148,7 @@ def get_profile_commented(profilename):
     try:
         author = get_profile_id(profilename)[0]
         sql = '''SELECT C.author_id, R.id, R.name, R.description, T.name AS type,
-        U.profilename, R.created_at, R.like_count, R.comment_count 
+        T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count 
         FROM comments C JOIN recipes R ON C.recipe_id=R.id 
         LEFT JOIN users U ON U.id=C.author_id 
         LEFT JOIN types T ON T.id=R.typeid 
@@ -222,7 +230,7 @@ def update_recipe_comment_count(recipe_id):
         return False
     return True
 
-# Likes: like count for lists, like for recipe page
+# Likes: like count for lists, liking for recipe page
 
 def get_like_count(recipe_id):
     try:
@@ -265,6 +273,38 @@ def update_recipe_like_count(recipe_id):
         sql = 'UPDATE recipes SET like_count=:like_count WHERE id=:recipe_id'
         db.session.execute(sql, {'recipe_id':recipe_id , 'like_count':like_count})
         db.session.commit()
+    except:
+        return False
+    return True
+
+# Search by text string and types
+
+def search(searched_word):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, T.id as typeid,
+        U.profilename, R.created_at, R.like_count, R.comment_count
+        FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
+        LEFT JOIN types T ON T.id=R.typeid
+        WHERE R.name ILIKE ('%' || :searched_word || '%') 
+        OR R.description ILIKE ('%' || :searched_word || '%') 
+        AND R.visible=1 
+        GROUP BY R.id, U.id, T.id 
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql, {'searched_word':searched_word})
+        return result.fetchall()
+    except:
+        return False
+
+def search_by_type(typeid):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps,
+        T.name AS type, T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count
+        FROM recipes R, users U, types T
+        WHERE R.creator_id=U.id AND T.id=R.typeid AND typeid=:typeid AND R.visible=1 
+        GROUP BY R.id, U.id, T.id 
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql, { 'typeid':typeid})
+        return result.fetchall()
     except:
         return False
     return True

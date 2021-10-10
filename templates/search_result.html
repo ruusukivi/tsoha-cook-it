@@ -1,0 +1,11 @@
+{% if recipes %}
+{% for recipe in recipes %}
+{% include 'card.html' %}
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="card-body">
+        <p class="card-text">No recipes found.</p>
+    </div>
+</div>
+{% endif %}

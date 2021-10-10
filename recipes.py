@@ -268,3 +268,21 @@ def update_recipe_like_count(recipe_id):
     except:
         return False
     return True
+
+# Search by text string and types
+
+def search_by_name(searched_word):
+    try:
+        sql = '''SELECT R.id, R.name, R.description, T.name AS type, U.profilename,
+        R.created_at, R.like_count, R.comment_count
+        FROM recipes R LEFT JOIN users U ON R.creator_id=U.id 
+        LEFT JOIN types T ON T.id=R.typeid
+        WHERE R.name ILIKE ('%' || :searched_word || '%') 
+        OR R.description ILIKE ('%' || :searched_word || '%') AND R.visible=1 
+        GROUP BY R.id, U.id, T.id 
+        ORDER BY R.created_at DESC'''
+        result = db.session.execute(sql, {'searched_word':searched_word})
+        return result.fetchall()
+    except:
+        return False
+    

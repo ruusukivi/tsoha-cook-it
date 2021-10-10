@@ -141,7 +141,7 @@ def get_profile_commented(profilename):
         author = get_profile_id(profilename)[0]
         sql = '''SELECT C.author_id, R.id, R.name, R.description, T.name AS type,
         U.profilename, R.created_at, R.like_count, R.comment_count 
-        FROM comments C JOIN recipes R ON C.author_id=R.creator_id 
+        FROM comments C JOIN recipes R ON C.recipe_id=R.id 
         LEFT JOIN users U ON U.id=C.author_id 
         LEFT JOIN types T ON T.id=R.typeid 
         WHERE R.visible=1 AND C.visible=1 AND C.author_id=:author 

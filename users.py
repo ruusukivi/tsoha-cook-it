@@ -19,11 +19,12 @@ def login(username, password):
     return False
 
 def logout():
-    del session['user_id']
-    del session['username']
-    del session['profilename']
-    del session['admin']
-    del session['csrf_token']
+    if user_id():
+        del session['user_id']
+        del session['username']
+        del session['profilename']
+        del session['admin']
+        del session['csrf_token']
 
 def signup(username, password, profilename):
     hash_value = generate_password_hash(password)

@@ -6,16 +6,16 @@
 <div class="alert alert-warning">{{ message }}</div>
 {% endif %}
 
-<h1>Search recipes</h1>
+<h1>Recipes by type</h1>
 
 <div class="tab-content" id="nav-tabContent">
     {% if not session.user_id %}
     <p>You are not logged in. Please <a href="/login">log in</a> to search recipes. </p>
     {% else %}
-    <input class="form-control" type="text" name="query" placeholder="Search from names and descriptions of recipes..." hx-post="/search"
-        hx-trigger="keyup changed delay:500ms" hx-target="#search-results" hx-indicator=".htmx-indicator">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <br />
+    {% for type in types %}
+    <a href="/type/{{ type.id }}"><button type="button" class="btn btn-light"> {{ type.name }} </button></a> 
+    {% endfor %}
+    <br/><br />
     <div class="tab-pane fade show active" id="search-results" >
         {% include 'search_result.html' %}
     </div>

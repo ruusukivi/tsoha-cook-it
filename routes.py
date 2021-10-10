@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash, render_template_string
+from flask import render_template, redirect, request, url_for, flash
 from app import app
 import users
 import recipes
@@ -156,7 +156,7 @@ def delete_comment():
     flash('You can delete only your own comments.', 'error')
     return redirect(url_for('get_recipe', recipe_id=recipe_id))
 
-# Search
+# Search and type pages
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -166,6 +166,17 @@ def search():
         return render_template('search.html', recipes=latest, types=types)
     if request.method == 'POST':
         searched_word = request.form['query']
-        filtered_by_name = recipes.search_by_name(searched_word)
-        return render_template('search_result.html', recipes=filtered_by_name, types=types)
+        filtered = recipes.search(searched_word)
+        return render_template('search_result.html', recipes=filtered,
+        types=types, searched_word=searched_word)
     return render_template('search.html', recipes=latest, types=types)
+
+@app.route('/type/<int:typeid>', methods=['GET'])
+def search_by_type(typeid):
+    by_type = recipes.search_by_type(typeid)
+    types = recipes.get_types()
+    type_name = recipes.get_type_name(typeid)
+    if request.method == 'GET':
+        return render_template('type.html', recipes=by_type, types=types,
+        searched_word=type_name[0])
+    return redirect('/search')

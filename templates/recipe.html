@@ -21,7 +21,7 @@
         </p>
 
         <p >
-            <a href="/">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
+            <a href="/type/{{ recipe.typeid }}">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
                 href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
                 | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
                 | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}

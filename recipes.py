@@ -134,7 +134,7 @@ def get_profile_likes(profilename):
         sql = '''SELECT L.liker_id, R.id, R.name, R.description, T.name AS type,
         T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count 
         FROM likes L JOIN recipes R ON L.recipe_id=R.id 
-        LEFT JOIN users U ON U.id=L.liker_id 
+        LEFT JOIN users U ON U.id=R.creator_id
         LEFT JOIN types T ON T.id=R.typeid 
         WHERE R.visible=1 AND L.liker_id=:liker 
         GROUP BY L.liker_id, R.id, U.id, T.id
@@ -150,7 +150,7 @@ def get_profile_commented(profilename):
         sql = '''SELECT C.author_id, R.id, R.name, R.description, T.name AS type,
         T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count 
         FROM comments C JOIN recipes R ON C.recipe_id=R.id 
-        LEFT JOIN users U ON U.id=C.author_id 
+        LEFT JOIN users U ON U.id=R.creator_id
         LEFT JOIN types T ON T.id=R.typeid 
         WHERE R.visible=1 AND C.visible=1 AND C.author_id=:author 
         GROUP BY C.author_id, R.id, U.id, T.id

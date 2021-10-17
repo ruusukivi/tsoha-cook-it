@@ -81,7 +81,7 @@ def addrecipe():
     form = request.form
     types = recipes.get_types()
     if request.method == 'GET':
-        return render_template('newrecipe.html', types = types)
+        return render_template('newrecipe.html', form=form, types = types)
     if request.method == 'POST':
         users.check_csrf()
         name = form['name']
@@ -95,6 +95,27 @@ def addrecipe():
             return redirect('/')
     flash('Adding the recipe failed. Please try again later.')
     return render_template("/newrecipe.html", form=form, types=types)
+
+@app.route('/recipe/update/<int:recipe_id>',methods=['GET', 'POST'])
+def updaterecipe(recipe_id):
+    recipe = recipes.get(recipe_id)
+    types = recipes.get_types()
+    if request.method == 'GET':
+        return render_template('updaterecipe.html', form=recipe, types=types)
+    if request.method == 'POST':
+        users.check_csrf()
+        form = request.form
+        name = form['name']
+        description = form['description']
+        typeid = form['typeid']
+        steps = form['steps']
+        ingredients = form['ingredients']
+        if not validation.validate_recipe(name, description, typeid, steps, ingredients):
+            return render_template("/updaterecipe.html", form=form, types=types)
+        if recipes.update_recipe(recipe_id, name, description, typeid, steps, ingredients):
+            return redirect('/')
+    flash('You can only update your own recipes. ')
+    return render_template("/updaterecipe.html", form=form, types=types)
 
 @app.route('/recipe/<int:recipe_id>',methods=['GET'])
 def get_recipe(recipe_id):

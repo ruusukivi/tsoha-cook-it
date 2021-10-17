@@ -14,7 +14,9 @@
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
                 <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
-                    Like recipe </button>
+                    {% if liked %}Remove your like {% endif %}
+                    {% if not liked %}Like recipe {% endif %}
+                </button>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
             {% endif %}

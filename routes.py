@@ -99,11 +99,13 @@ def addrecipe():
 @app.route('/recipe/<int:recipe_id>',methods=['GET'])
 def get_recipe(recipe_id):
     if request.method == 'GET':
+        current_user = users.user_id()
         recipe = recipes.get(recipe_id)
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
+        liked = recipes.has_user_liked(recipe_id, current_user)
         return render_template('recipe.html', recipe=recipe,
-        all_comments=all_comments, comments=comments)
+        all_comments=all_comments, comments=comments, liked=liked)
     return render_template('error.html', message='Recipe was not found.')
 
 @app.route('/recipe/delete',methods=['POST'])

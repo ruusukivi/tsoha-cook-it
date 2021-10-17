@@ -35,9 +35,9 @@ def get_commented():
     try:
         sql = '''SELECT R.id, R.name, R.description, R.ingredients, R.steps, T.name AS type,
         T.id as typeid, U.profilename, R.created_at, R.like_count, R.comment_count
-        FROM recipes R, users U, types T
-        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.comment_count>0
-        GROUP BY R.id, U.profilename, T.name
+        FROM recipes R, users U, types T, comments C
+        WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND C.visible=1 AND R.comment_count>0
+        GROUP BY R.id, T.id, U.id
         ORDER BY R.comment_count DESC'''
         result = db.session.execute(sql)
         return result.fetchall()

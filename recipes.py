@@ -66,7 +66,28 @@ def add_recipe(name, description, typeid, steps, ingredients):
         VALUES (:name,:description,:typeid,:steps,:ingredients,:creator_id,now(),:visible)'''
         db.session.execute(sql,
         {'name':name,'description':description,'typeid':typeid,
-        'steps':steps,'ingredients':ingredients,'creator_id':creator_id,'visible':visible})
+        'steps':steps,'ingredients':ingredients,'creator_id':creator_id,
+        'visible':visible})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
+    try:
+        if session['admin']:
+            sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
+            ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id'''
+            db.session.execute(sql,{'recipe_id':recipe_id, 'name':name,
+            'description':description, 'steps':steps, 'ingredients':ingredients, 'typeid':typeid})
+        else:
+            creator_id = session['user_id']
+            sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
+            ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id AND
+            creator_id=:creator_id'''
+            db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
+            'name':name, 'description':description, 'steps':steps, 'ingredients':ingredients,
+            'typeid':typeid})
         db.session.commit()
     except:
         return False

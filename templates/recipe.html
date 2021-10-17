@@ -14,19 +14,20 @@
             {% if session.user_id %}
             <form action="/recipe/like" method="POST">
                 <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-primary">
-                    {% if liked %}Remove your like {% endif %}
-                    {% if not liked %}Like recipe {% endif %}
+                    {% if liked %}Remove your like{% endif %}
+                    {% if not liked %}Like recipe{% endif %}
                 </button>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
             {% endif %}
         </p>
 
-        <p >
-            <a href="/type/{{ recipe.typeid }}">{{ recipe.type }}</a> | {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
-                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a> 
-                | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
-                | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
+        <p>
+            <a href="/type/{{ recipe.typeid }}">{{ recipe.type }}</a> |
+            {{ recipe.created_at.strftime("%Y-%m-%d %H:%M") }} | <a
+                href="/profile/{{ recipe.profilename }}">{{ recipe.profilename }}</a>
+            | <i class="fa fa-heart"></i> Likes {{ recipe.like_count }}
+            | <i class="fa fa-comment"></i> Comments {{ recipe.comment_count }}
         </p>
 
         <p class="card-text"> {{ recipe.description }}</p>
@@ -39,19 +40,30 @@
         <p class="card-text">
             <pre>{{ recipe.steps }}</pre>
         </p>
-        {% if (session.user_id == recipe.creator_id) or (session.admin) %}
-        <form action="/recipe/delete" method="POST">
-            <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger">Delete recipe</button>
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        </form>
-        {% endif %}
-        <br/>
+        <div class=row>
+            <div class="col-auto d-flex flex-column">
+                <div>
+                    {% if (session.user_id == recipe.creator_id) or (session.admin) %}
+                    <a href="/recipe/update/{{ recipe.id }}">
+                        <button class="btn btn-dark m-1">Update recipe</button>
+                    </a>
+                    <form action="/recipe/delete" method="POST"> 
+                        <button name="recipe_id" value="{{ recipe.id }}" class="btn btn-outline-danger m-1">
+                            Delete recipe</button>
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <br />
         {% include 'newcomment.html' %}
         {% for comment in all_comments %}
         <div class="card bg-light">
             <div class="card-body">
                 <h5 class="card-title">{{ comment.title}}</h5>
-                <div class="card-subtitle mb-2"><small class="text-muted">{{ comment.created_at.strftime("%Y-%m-%d %H:%M") }}
+                <div class="card-subtitle mb-2"><small
+                        class="text-muted">{{ comment.created_at.strftime("%Y-%m-%d %H:%M") }}
                         | <a href="/profile/{{ comment.profilename }}">{{ comment.profilename }}</a></small></div>
                 <p class="card-text">{{ comment.comment}}</p>
                 {% if (session.user_id == comment.author_id) or (session.admin) %}

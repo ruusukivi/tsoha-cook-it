@@ -6,10 +6,11 @@
 {% if not session.user_id %}
 <p>You are not logged in. Please <a href="/login">log in</a>. </p>
 {% else %}
-<form action="/newrecipe" method="POST" onsubmit="return check(this)">
+<form action="/newrecipe" method="POST" onsubmit="return check(this)"  enctype="multipart/form-data">
     {% include 'recipeform.html' %}
     <div class="form-group">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button type="submit" class="btn btn-dark">Add recipe</button>
     </div>
     </div>
 </form>

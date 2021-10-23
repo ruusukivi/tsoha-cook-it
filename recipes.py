@@ -57,21 +57,27 @@ def get(recipe_id):
     except:
         return False
 
+def get_last_id():
+    sql = '''SELECT id FROM recipes WHERE id=$lastid'''
+    result = db.session.execute(sql)
+    return result.fetchone()[0]
+
 def add_recipe(name, description, typeid, steps, ingredients):
     creator_id = session['user_id']
     visible = 1
     try:
         sql = '''INSERT INTO recipes (name,description,typeid,steps,ingredients,
         creator_id,created_at,visible)
-        VALUES (:name,:description,:typeid,:steps,:ingredients,:creator_id,now(),:visible)'''
-        db.session.execute(sql,
+        VALUES (:name,:description,:typeid,:steps,:ingredients,:creator_id,now(),:visible)
+        RETURNING id'''
+        result = db.session.execute(sql,
         {'name':name,'description':description,'typeid':typeid,
         'steps':steps,'ingredients':ingredients,'creator_id':creator_id,
         'visible':visible})
-        db.session.commit()
     except:
         return False
-    return True
+    return result.fetchone()[0]
+
 
 def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
     try:

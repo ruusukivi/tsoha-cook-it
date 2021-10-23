@@ -41,3 +41,14 @@ CREATE TABLE comments (
     visible INTEGER NOT NULL
 );
 
+CREATE TABLE photos (
+    id SERIAL PRIMARY KEY,
+    name TEXT, 
+    data BYTEA,
+    size int,
+    creator_id INTEGER REFERENCES users,
+    recipe_id INTEGER REFERENCES recipes,
+    created_at TIMESTAMP DEFAULT NOW(),
+    visible INTEGER NOT NULL
+);
+

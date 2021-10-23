@@ -11,10 +11,10 @@
                     {% if form %}
                     <input type="text" class="form-control" name="title" value="{{ form.title }}" required>
                     {% else %}
-                    <input type="text" class="form-control" name="title" placeholder="Your headline for the comment" required>
+                    <input type="text" class="form-control" name="title" placeholder="Your headline..." required>
                     {% endif %}
                     <br />
-                    <textarea type="text" name="comment" class="form-control" rows="3" placeholder="Your comment...."
+                    <textarea type="text" name="comment" class="form-control" rows="3" placeholder="Your comment..."
                         required>{% if form %}{{ form.comment }}{% endif %}</textarea>
                 </div>
                 <br />

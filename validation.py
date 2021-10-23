@@ -38,6 +38,16 @@ def validate_recipe(name, description, typeid, steps, ingredients):
         return False
     return True
 
+def validate_photo(file):
+    if not (file.filename.endswith('.jpg') or file.filename.endswith('.jpeg')):
+        flash('Oops! Wrong image format, use .jpeg or .jpg', 'error')
+        return False
+    data = file.read()
+    if len(data) > 1000*1024:
+        flash('Oops! Too large a photo.', 'error')
+        return False
+    return True
+
 def validate_comment(title, comment, recipe_id):
     if len(title) > 150:
         flash('Oops! Title is too long', 'error')

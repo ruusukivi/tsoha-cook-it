@@ -99,9 +99,7 @@ def addrecipe():
         file = request.files["file"]
         photo_name = file.filename
         data = file.read()
-        print("name", photo_name)
         size = len(data)
-        print("length", size, "bytes")
         if file and not validation.validate_photo(file):
             return render_template("/newrecipe.html", form=form, types=types)
         if file:
@@ -119,6 +117,7 @@ def updaterecipe(recipe_id):
     if request.method == 'GET':
         return render_template('updaterecipe.html', form=recipe, types=types)
     if request.method == 'POST':
+         #Adding recipe details
         users.check_csrf()
         form = request.form
         name = form['name']
@@ -128,8 +127,8 @@ def updaterecipe(recipe_id):
         ingredients = form['ingredients']
         if not validation.validate_recipe(name, description, typeid, steps, ingredients):
             return render_template("/updaterecipe.html", form=form, types=types)
-        if recipes.update_recipe(recipe_id, name, description, typeid, steps, ingredients):
-            return redirect('/')
+        recipe_id = recipes.update_recipe(recipe_id, name, description, typeid, steps, ingredients)
+        return redirect(url_for('get_recipe', recipe_id=recipe_id))
     flash('You can only update your own recipes. ')
     return render_template("/updaterecipe.html", form=form, types=types)
 
@@ -137,7 +136,7 @@ def updaterecipe(recipe_id):
 def get_recipe(recipe_id):
     if request.method == 'GET':
         current_user = users.user_id()
-        recipe = recipes.get(recipe_id)
+        recipe = recipes.get(recipe_id) 
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
         liked = recipes.has_user_liked(recipe_id, current_user)
@@ -223,7 +222,12 @@ def search_by_type(typeid):
 
 # Showing photos
 
-@app.route("/photo/<int:photo_id>")
+@app.route("/photo/<int:photo_id>", methods=['GET'])
 def show_photo(photo_id):
-    return photos.get_photo(photo_id)
+    if request.method == 'GET':
+        photo = photos.get_photo(photo_id)
+        if photo:
+            return photo
+    flash('Oops! Photo does not exist.', 'error')
+    return redirect('/')
     

@@ -1,5 +1,6 @@
 from flask import session
 from db import db
+import photos
 
 # Recipes for front page
 
@@ -57,11 +58,6 @@ def get(recipe_id):
     except:
         return False
 
-def get_recipe(name):
-    sql = '''SELECT id FROM recipes WHERE name=$name'''
-    result = db.session.execute(sql)
-    return result.fetchone()[0]
-
 def add_recipe(name, description, typeid, steps, ingredients):
     creator_id = session['user_id']
     visible = 1
@@ -84,32 +80,37 @@ def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
     try:
         if session['admin']:
             sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
-            ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id'''
-            db.session.execute(sql,{'recipe_id':recipe_id, 'name':name,
+            ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id RETURNING id'''
+            result = db.session.execute(sql,{'recipe_id':recipe_id, 'name':name,
             'description':description, 'steps':steps, 'ingredients':ingredients, 'typeid':typeid})
+            db.session.commit()
+            return result.fetchone()[0]
         else:
             creator_id = session['user_id']
             sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
             ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id AND
-            creator_id=:creator_id'''
-            db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
+            creator_id=:creator_id RETURNING id'''
+            result = db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
             'name':name, 'description':description, 'steps':steps, 'ingredients':ingredients,
             'typeid':typeid})
             db.session.commit()
+            return result.fetchone()[0]
     except:
         return False
-    return True
 
 def delete_recipe(recipe_id):
     try:
         if session['admin']:
             sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id'
             db.session.execute(sql,{'recipe_id':recipe_id})
+            db.session.commit()
+            photos.delete_photo(recipe_id)
         else:
             creator_id = session['user_id']
             sql = 'UPDATE recipes SET visible=0 WHERE id=:recipe_id AND creator_id=:creator_id'
             db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id})
-        db.session.commit()
+            db.session.commit()
+            photos.delete_photo(recipe_id)
     except:
         return False
     return True

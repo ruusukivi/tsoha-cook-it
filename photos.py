@@ -17,7 +17,7 @@ def add_photo(name, data, size, recipe_id):
 
 def get_photo(photo_id):
     try:
-        sql = 'SELECT data FROM photos WHERE id=:photo_id'
+        sql = 'SELECT data FROM photos WHERE id=:photo_id AND visible=1'
         result = db.session.execute(sql, {'photo_id':photo_id})
         data = result.fetchone()[0]
         response = make_response(bytes(data))
@@ -28,9 +28,17 @@ def get_photo(photo_id):
 
 def get_photo_id(recipe_id):
     try:
-        sql = 'SELECT id FROM photos WHERE recipe_id=:recipe_id'
+        sql = 'SELECT id FROM photos WHERE recipe_id=:recipe_id AND visible=1'
         result = db.session.execute(sql, {'recipe_id':recipe_id})
-        photo_id = result.fetchone()[0]
-        return photo_id
+        return result.fetchone()[0]
+    except:
+        return False
+
+def delete_photo(recipe_id):
+    try:
+        sql = 'UPDATE photos SET visible=0 WHERE recipe_id=:recipe_id'
+        result = db.session.execute(sql, {'recipe_id':recipe_id})
+        db.session.commit()
+        return result.fetchone()[0]
     except:
         return False

@@ -32,7 +32,7 @@
 
         <p class="card-text">{{ recipe.description }}</p>
         {% if photo %}
-        <p class="card-text"> <img src="/photo/{{photo}}" alt="{{ recipe.name}}}" width="50%" height=""/></p>
+        <p class="card-text"> <a href="/photo/{{photo}}"><img src="/photo/{{photo}}" alt="{{ recipe.name}}}" width="50%" height=""/></a> </p>
         {% endif %}
 
         <h3>Ingredients</h3>

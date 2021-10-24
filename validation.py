@@ -2,6 +2,8 @@ from flask import flash
 import users
 import recipes
 
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
 def validate_signup(password, password2, username, profilename):
     if '@' not in username or users.is_username_taken(username):
         flash('Oops! Username should be an unique email address', 'error')
@@ -35,6 +37,19 @@ def validate_recipe(name, description, typeid, steps, ingredients):
         return False
     if len(ingredients) > 1500:
         flash('Oops! Too much text in Ingredients.', 'error')
+        return False
+    return True
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def validate_photo(file):
+    if not  allowed_file(file.filename):
+        flash('Oops! Allowed image types are -> png, jpg, jpeg, gif', 'error')
+        return False
+    data = file.read()
+    if len(data) > 1000*1024:
+        flash('Oops! Too large a photo.', 'error')
         return False
     return True
 

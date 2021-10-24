@@ -2,6 +2,7 @@ from flask import render_template, redirect, request, url_for, flash
 from app import app
 import users
 import recipes
+import photos
 import validation
 
 @app.route('/')
@@ -13,7 +14,7 @@ def index():
     return render_template('index.html', latest=latest, popular=popular, commented=commented,
     types=types)
 
-#Signup, login, logout, granting admin rights
+# Signup, login, logout, granting admin rights
 
 @app.route('/signup',methods=['GET', 'POST'])
 def signup():
@@ -62,7 +63,7 @@ def grant_admin_rights():
     flash('Admin rights could not be given.')
     return redirect(url_for('get_profile', profilename=profilename))
 
-#Profile page
+# Profile page
 
 @app.route('/profile/<string:profilename>',methods=['GET'])
 def get_profile(profilename):
@@ -74,15 +75,16 @@ def get_profile(profilename):
         popular=profile_likes, commented=profile_commented, profilename=profilename)
     return render_template('error.html', message='User was not found.')
 
-#Recipe: new recipe, recipe page, deleting recipe
+# Recipe: new recipe, recipe page, deleting recipe
 
 @app.route('/newrecipe',methods=['GET', 'POST'])
 def addrecipe():
     form = request.form
     types = recipes.get_types()
     if request.method == 'GET':
-        return render_template('newrecipe.html', form=form, types = types)
+        return render_template('newrecipe.html', form=form, types=types)
     if request.method == 'POST':
+        # Adding recipe details
         users.check_csrf()
         name = form['name']
         description = form['description']
@@ -91,9 +93,19 @@ def addrecipe():
         ingredients = form['ingredients']
         if not validation.validate_recipe(name, description, typeid, steps, ingredients):
             return render_template("/newrecipe.html", form=form, types=types)
-        if recipes.add_recipe(name, description, typeid, steps, ingredients):
-            return redirect('/')
-    flash('Adding the recipe failed. Please try again later.')
+        recipe_id = recipes.add_recipe(name, description, typeid, steps, ingredients)
+        print('onnistuuko paluu', recipe_id)
+        # Adding photo
+        file = request.files["file"]
+        photo_name = file.filename
+        data = file.read()
+        size = len(data)
+        if file:
+            if not validation.validate_photo(file):
+                return render_template("/newrecipe.html", form=form, types=types)
+            photos.add_photo(photo_name, data, size, recipe_id)
+        return redirect(url_for('get_recipe', recipe_id=recipe_id))
+    flash('Adding the recipe failed. Please try again later.', 'error')
     return render_template("/newrecipe.html", form=form, types=types)
 
 @app.route('/recipe/update/<int:recipe_id>',methods=['GET', 'POST'])
@@ -103,6 +115,7 @@ def updaterecipe(recipe_id):
     if request.method == 'GET':
         return render_template('updaterecipe.html', form=recipe, types=types)
     if request.method == 'POST':
+         # Adding recipe details
         users.check_csrf()
         form = request.form
         name = form['name']
@@ -112,8 +125,18 @@ def updaterecipe(recipe_id):
         ingredients = form['ingredients']
         if not validation.validate_recipe(name, description, typeid, steps, ingredients):
             return render_template("/updaterecipe.html", form=form, types=types)
-        if recipes.update_recipe(recipe_id, name, description, typeid, steps, ingredients):
-            return redirect('/')
+        recipe_id = recipes.update_recipe(recipe_id, name, description, typeid, steps, ingredients)
+        # Adding photo
+        file = request.files["file"]
+        photo_name = file.filename
+        data = file.read()
+        size = len(data)
+        if file:
+            if not validation.validate_photo(file):
+                return render_template("/updaterecipe.html", form=form, types=types)
+            photos.delete_photo(recipe_id)
+            photos.add_photo(photo_name, data, size, recipe_id)
+        return redirect(url_for('get_recipe', recipe_id=recipe_id))
     flash('You can only update your own recipes. ')
     return render_template("/updaterecipe.html", form=form, types=types)
 
@@ -125,8 +148,9 @@ def get_recipe(recipe_id):
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
         liked = recipes.has_user_liked(recipe_id, current_user)
+        photo = photos.get_photo_id(recipe_id)
         return render_template('recipe.html', recipe=recipe,
-        all_comments=all_comments, comments=comments, liked=liked)
+        all_comments=all_comments, comments=comments, liked=liked, photo=photo)
     return render_template('error.html', message='Recipe was not found.')
 
 @app.route('/recipe/delete',methods=['POST'])
@@ -138,9 +162,9 @@ def delete_recipe():
             flash('Done! You have now deleted the recipe.')
             return redirect('/')
     flash('You can delete only you own recipes.', 'error')
-    return redirect(url_for('get_recipe', recipe=recipe_id))
+    return redirect(url_for('get_recipe', recipe_id=recipe_id))
 
-#Recipe likes and comments
+# Recipe likes and comments
 
 @app.route('/recipe/like',methods=['POST'])
 def like_recipe():
@@ -179,7 +203,7 @@ def delete_comment():
     flash('You can delete only your own comments.', 'error')
     return redirect(url_for('get_recipe', recipe_id=recipe_id))
 
-# Search and type pages
+# Search and lists by type
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -203,3 +227,15 @@ def search_by_type(typeid):
         return render_template('type.html', recipes=by_type, types=types,
         searched_word=type_name[0])
     return redirect('/search')
+
+# Showing photos
+
+@app.route("/photo/<int:photo_id>", methods=['GET'])
+def show_photo(photo_id):
+    if request.method == 'GET':
+        photo = photos.get_photo(photo_id)
+        if photo:
+            return photo
+    flash('Oops! Photo does not exist.', 'error')
+    return redirect('/')
+    

@@ -141,7 +141,7 @@ def get_recipe(recipe_id):
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
         liked = recipes.has_user_liked(recipe_id, current_user)
-        photo = photos.get_recipe_photo(recipe_id)
+        photo = photos.get_photo_id(recipe_id)
         return render_template('recipe.html', recipe=recipe,
         all_comments=all_comments, comments=comments, liked=liked, photo=photo)
     return render_template('error.html', message='Recipe was not found.')

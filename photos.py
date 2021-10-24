@@ -26,13 +26,11 @@ def get_photo(photo_id):
     except:
         return False
 
-def get_recipe_photo(recipe_id):
+def get_photo_id(recipe_id):
     try:
-        sql = 'SELECT data FROM photos WHERE recipe_id=:recipe_id'
+        sql = 'SELECT id FROM photos WHERE recipe_id=:recipe_id'
         result = db.session.execute(sql, {'recipe_id':recipe_id})
-        data = result.fetchone()[0]
-        response = make_response(bytes(data))
-        response.headers.set('Content-Type', 'image/jpeg')
-        return response
+        photo_id = result.fetchone()[0]
+        return photo_id
     except:
         return False

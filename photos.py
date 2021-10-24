@@ -35,10 +35,7 @@ def get_photo_id(recipe_id):
         return False
 
 def delete_photo(recipe_id):
-    try:
-        sql = 'UPDATE photos SET visible=0 WHERE recipe_id=:recipe_id'
-        result = db.session.execute(sql, {'recipe_id':recipe_id})
-        db.session.commit()
-        return result.fetchone()[0]
-    except:
-        return False
+    sql = 'UPDATE photos SET visible=0 WHERE recipe_id=:recipe_id AND visible=1'
+    db.session.execute(sql, {'recipe_id':recipe_id})
+    db.session.commit()
+    return True

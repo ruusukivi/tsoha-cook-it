@@ -41,7 +41,7 @@ def validate_recipe(name, description, typeid, steps, ingredients):
     return True
 
 def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def validate_photo(file):
     if not  allowed_file(file.filename):

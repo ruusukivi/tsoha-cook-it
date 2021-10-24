@@ -11,7 +11,8 @@ def get_all():
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 
         GROUP BY R.id, U.id, T.id 
-        ORDER BY R.created_at DESC'''
+        ORDER BY R.created_at DESC
+        LIMIT 100'''
         result = db.session.execute(sql)
         return result.fetchall()
     except:
@@ -25,7 +26,8 @@ def get_popular():
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND R.like_count>0
         GROUP BY R.id, U.id, T.id
-        ORDER BY R.like_count DESC'''
+        ORDER BY R.like_count DESC
+        LIMIT 100'''
         result = db.session.execute(sql)
         return result.fetchall()
     except:
@@ -39,7 +41,8 @@ def get_commented():
         FROM recipes R, users U, types T, comments C
         WHERE R.creator_id=U.id AND T.id=R.typeid AND R.visible=1 AND C.visible=1 AND R.comment_count>0
         GROUP BY R.id, T.id, U.id
-        ORDER BY R.comment_count DESC'''
+        ORDER BY R.comment_count DESC
+        LIMIT 100'''
         result = db.session.execute(sql)
         return result.fetchall()
     except:
@@ -85,16 +88,15 @@ def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
             'description':description, 'steps':steps, 'ingredients':ingredients, 'typeid':typeid})
             db.session.commit()
             return result.fetchone()[0]
-        else:
-            creator_id = session['user_id']
-            sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
-            ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id AND
-            creator_id=:creator_id RETURNING id'''
-            result = db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
-            'name':name, 'description':description, 'steps':steps, 'ingredients':ingredients,
-            'typeid':typeid})
-            db.session.commit()
-            return result.fetchone()[0]
+        creator_id = session['user_id']
+        sql = '''UPDATE recipes SET name=:name, description=:description, steps=:steps,
+        ingredients=:ingredients, typeid=:typeid WHERE id=:recipe_id AND
+        creator_id=:creator_id RETURNING id'''
+        result = db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
+        'name':name, 'description':description, 'steps':steps, 'ingredients':ingredients,
+        'typeid':typeid})
+        db.session.commit()
+        return result.fetchone()[0]
     except:
         return False
 
@@ -318,7 +320,8 @@ def search(searched_word):
         OR R.description ILIKE ('%' || :searched_word || '%') 
         AND R.visible=1 
         GROUP BY R.id, U.id, T.id 
-        ORDER BY R.created_at DESC'''
+        ORDER BY R.created_at DESC
+        LIMIT 100'''
         result = db.session.execute(sql, {'searched_word':searched_word})
         return result.fetchall()
     except:
@@ -331,7 +334,8 @@ def search_by_type(typeid):
         FROM recipes R, users U, types T
         WHERE R.creator_id=U.id AND T.id=R.typeid AND typeid=:typeid AND R.visible=1 
         GROUP BY R.id, U.id, T.id 
-        ORDER BY R.created_at DESC'''
+        ORDER BY R.created_at DESC
+        LIMIT 100'''
         result = db.session.execute(sql, { 'typeid':typeid})
         return result.fetchall()
     except:

@@ -57,8 +57,8 @@ def get(recipe_id):
     except:
         return False
 
-def get_last_id():
-    sql = '''SELECT id FROM recipes WHERE id=$lastid'''
+def get_recipe(name):
+    sql = '''SELECT id FROM recipes WHERE name=$name'''
     result = db.session.execute(sql)
     return result.fetchone()[0]
 
@@ -74,9 +74,10 @@ def add_recipe(name, description, typeid, steps, ingredients):
         {'name':name,'description':description,'typeid':typeid,
         'steps':steps,'ingredients':ingredients,'creator_id':creator_id,
         'visible':visible})
+        db.session.commit()
+        return result.fetchone()[0]
     except:
         return False
-    return result.fetchone()[0]
 
 
 def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
@@ -94,7 +95,7 @@ def update_recipe(recipe_id, name, description, typeid, steps, ingredients):
             db.session.execute(sql,{'recipe_id':recipe_id, 'creator_id':creator_id,
             'name':name, 'description':description, 'steps':steps, 'ingredients':ingredients,
             'typeid':typeid})
-        db.session.commit()
+            db.session.commit()
     except:
         return False
     return True

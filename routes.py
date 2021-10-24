@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash, make_response
+from flask import render_template, redirect, request, url_for, flash
 from app import app
 import users
 import recipes
@@ -84,6 +84,7 @@ def addrecipe():
     if request.method == 'GET':
         return render_template('newrecipe.html', form=form, types=types)
     if request.method == 'POST':
+        #Adding recipe details
         users.check_csrf()
         name = form['name']
         description = form['description']
@@ -92,15 +93,22 @@ def addrecipe():
         ingredients = form['ingredients']
         if not validation.validate_recipe(name, description, typeid, steps, ingredients):
             return render_template("/newrecipe.html", form=form, types=types)
+        recipe_id = recipes.add_recipe(name, description, typeid, steps, ingredients)
+        print('onnistuuko paluu', recipe_id)
+        # Adding photo
         file = request.files["file"]
+        photo_name = file.filename
+        data = file.read()
+        print("name", photo_name)
+        size = len(data)
+        print("length", size, "bytes")
         if file and not validation.validate_photo(file):
             return render_template("/newrecipe.html", form=form, types=types)
-        recipe_id = recipes.add_recipe(name, description, typeid, steps, ingredients)
-        print('resepti',recipe_id)
-        if recipe_id:    
-            if file:
-                photos.add_photo(file, recipe_id)
-            return redirect('/')
+        if file:
+            if not validation.validate_photo(file):
+                return render_template("/newrecipe.html", form=form, types=types)
+            photos.add_photo(photo_name, data, size, recipe_id)
+        return redirect(url_for('get_recipe', recipe_id=recipe_id))
     flash('Adding the recipe failed. Please try again later.', 'error')
     return render_template("/newrecipe.html", form=form, types=types)
 
@@ -133,10 +141,9 @@ def get_recipe(recipe_id):
         all_comments = recipes.get_comments(recipe_id)
         comments = recipes.get_comments_count(recipe_id)
         liked = recipes.has_user_liked(recipe_id, current_user)
-        response = make_response(bytes(photos.get_photo(recipe_id)))
-        response.headers.set("Content-Type", "image/jpeg")
+        photo = photos.get_recipe_photo(recipe_id)
         return render_template('recipe.html', recipe=recipe,
-        all_comments=all_comments, comments=comments, liked=liked, photo=response)
+        all_comments=all_comments, comments=comments, liked=liked, photo=photo)
     return render_template('error.html', message='Recipe was not found.')
 
 @app.route('/recipe/delete',methods=['POST'])
@@ -148,7 +155,7 @@ def delete_recipe():
             flash('Done! You have now deleted the recipe.')
             return redirect('/')
     flash('You can delete only you own recipes.', 'error')
-    return redirect(url_for('get_recipe', recipe=recipe_id))
+    return redirect(url_for('get_recipe', recipe_id=recipe_id))
 
 #Recipe likes and comments
 
@@ -189,7 +196,7 @@ def delete_comment():
     flash('You can delete only your own comments.', 'error')
     return redirect(url_for('get_recipe', recipe_id=recipe_id))
 
-# Search and type pages
+# Search and lists by type
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -213,3 +220,10 @@ def search_by_type(typeid):
         return render_template('type.html', recipes=by_type, types=types,
         searched_word=type_name[0])
     return redirect('/search')
+
+# Showing photos
+
+@app.route("/photo/<int:photo_id>")
+def show_photo(photo_id):
+    return photos.get_photo(photo_id)
+    
